@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Checkers.Bot")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Program testujący boty grające w Warcaby. Narzędzie dydaktyczne w ramach przedmiotu Programowanie Sztucznej Inteligencji w Grach Komputerowych (PSzIwGK)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Politechnika Łódzka, Instytut Informatyki Stosowanej")]
 [assembly: AssemblyProduct("Checkers.Bot")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © Tomasz Jaworski, Krzysztof Ślot 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
