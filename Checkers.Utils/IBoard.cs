@@ -46,6 +46,11 @@ namespace Checkers.Utils
         bool MoveSelectedPawnTo(string field_address);
 
 
+        /// <summary>Pobiera zawartość całej planszy (tablica 8x8)<br/>Pierwsza współrzędna - wiersze<br/>Druga współrzędna - kolumny</summary>
+        /// <returns></returns>
+        PawnType[,] GetCheckboard();
+
+
         /// <summary>
         /// Wyświetl tekst w oknie logów (dla gracza)
         /// </summary>

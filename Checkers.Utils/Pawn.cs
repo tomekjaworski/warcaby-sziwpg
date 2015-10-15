@@ -10,7 +10,7 @@ namespace Checkers.Utils
     /// <summary>
     /// Klasa metod statycznych operacji na kolorach i typach pionów
     /// </summary>
-    public class Pawn
+    public static class Pawn
     {
         /// <summary>
         /// Porównanie dwóch pionów ze względu na ich kolor
@@ -65,6 +65,18 @@ namespace Checkers.Utils
             return PawnColor.None;
         }
 
+        /// <summary>Określ kolor przeciwnika dla podanego koloru</summary>
+        /// <param name="pc">Kolor</param>
+        /// <returns>Kolor przeciwnika</returns>
+        public static PawnColor GetOpponentColor(PawnColor pc)
+        {
+            if (pc == PawnColor.Black)
+                return PawnColor.White;
+            if (pc == PawnColor.White)
+                return PawnColor.Black;
+            return PawnColor.None;
+        }
+
 
         /// <summary>Zamienia adres pola w postaci tekstowej na strukturę System.Drawing.Point</summary>
         /// <param name="field_address">Tekstowy adres pola w postaci <b>A1-H8</b> lub <b>11-88</b></param>
@@ -96,6 +108,26 @@ namespace Checkers.Utils
         {
             String s = string.Format("{0}{1}", (char)('A' + p.Y), (1 + p.X).ToString());
             return s;
+        }
+
+        public static bool IsNone(PawnType pt)
+        {
+            return pt == PawnType.None;
+        }
+
+        public static bool IsNone(PawnColor pc)
+        {
+            return pc == PawnColor.None;
+        }
+
+
+        public static bool InBound(Point p)
+        {
+            if (p.X < 0 || p.X > 7)
+                return false;
+            if (p.Y < 0 || p.Y > 7)
+                return false;
+            return true;
         }
     }
 }

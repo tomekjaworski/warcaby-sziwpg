@@ -29,5 +29,16 @@ namespace Checkers.Utils
         {
             return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
         }
+
+
+        public static Point Add(this Point p, Point p1)
+        {
+            return new Point(p.X + p1.X, p.Y + p1.Y);
+        }
+
+        public static Point Add(this Point p, int dx, int dy)
+        {
+            return new Point(p.X + dx, p.Y + dy);
+        }
     }
 }
