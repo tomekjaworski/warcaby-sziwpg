@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers", "Warcaby\Checkers.csproj", "{2889C9C3-4577-4841-9E90-B7B615E18266}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers", "Checkers\Checkers.csproj", "{2889C9C3-4577-4841-9E90-B7B615E18266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers.Utils", "Warcaby.Biblio\Checkers.Utils.csproj", "{9523C63A-D47B-42E9-9CF1-A1ED416AB412}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers.Utils", "Checkers.Utils\Checkers.Utils.csproj", "{9523C63A-D47B-42E9-9CF1-A1ED416AB412}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers.Bot", "Checkers.Bot\Checkers.Bot.csproj", "{009B1AF5-21D2-4BCB-B07B-E6C28603A398}"
 EndProject

@@ -42,7 +42,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Warcaby.Biblio\Checkers.Utils.csproj">
+    <ProjectReference Include="..\Checkers.Utils\Checkers.Utils.csproj">
       <Project>{9523c63a-d47b-42e9-9cf1-a1ed416ab412}</Project>
       <Name>Checkers.Utils</Name>
     </ProjectReference>
