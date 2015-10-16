@@ -1,6 +1,7 @@
 ﻿using Checkers.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -50,8 +51,10 @@ namespace Checkers.Bot
               tutaj bot wykonuje swój ruch
              */
 
-            this.plansza.SelectPawn("F3");
-            this.plansza.MoveSelectedPawnTo("E4");
+            PawnType[,] tab = this.plansza.GetCheckboard();
+
+            this.plansza.SelectPawn("G4");
+            this.plansza.MoveSelectedPawnTo("F5");
         }
 
 
