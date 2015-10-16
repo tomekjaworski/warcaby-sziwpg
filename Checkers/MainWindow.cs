@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -76,40 +77,7 @@ namespace Checkers
             }
         }
 
-        private void pion_Click(object sender, EventArgs e)
-        {
-            if (this.current_turn == PawnColor.None || this.human_color == PawnColor.None)
-                return;
-
-            /* */
-            if (this.current_turn != this.human_color) // czy ruch CPU/bota?
-            {
-                System.Media.SystemSounds.Hand.Play();
-                return;
-            }
-            /* */
-
-
-            // kliknięcie na pion
-            string field_addr = (sender as Label).Name.Substring(1);
-            PawnType pointed_color = this.GetPawn(field_addr);
-
-            if (Pawn.EqualColor(this.current_turn, pointed_color))
-            {
-                // człowiek kliknał na inny pion (swój)
-                SelectPawn(field_addr);
-                return;
-            }
-
-            if (pointed_color == PawnType.None && this.selected_col != -1 && this.selected_row != -1)
-            {
-                this.movement_done = false;
-                MoveSelectedPawnTo(field_addr);
-
-                this.CheckStopConditions();
-            }
-        }
-
+      
         private void CheckStopConditions()
         {
             // policz piony
@@ -124,13 +92,23 @@ namespace Checkers
             bool stop_game = false;
             if (cwhite == 0)
             {
-                MessageBox.Show("Czarne piony wygrały!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("CZARNE piony wygrały!\n");
+                sb.AppendFormat("Uzyskane punkty: {0}\n", this.black_score);
+                sb.AppendFormat("Typ gracza: {0}\n", this.cpu_color == PawnColor.Black ? "Bot/CPU" : "Człowiek");
+
+                MessageBox.Show(sb.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 stop_game = true;
             }
 
             if (cblack == 0)
             {
-                MessageBox.Show("Białe piony wygrały!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("BIAŁE piony wygrały!\n");
+                sb.AppendFormat("Uzyskane punkty: {0}\n", this.white_score);
+                sb.AppendFormat("Typ gracza: {0}\n", this.cpu_color == PawnColor.White ? "Bot/CPU" : "Człowiek");
+
+                MessageBox.Show(sb.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 stop_game = true;
             }
 
@@ -145,14 +123,18 @@ namespace Checkers
 
             if (this.stagnation_counter >= 15)
             {
-                MessageBox.Show("REMIS", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("REMIS!");
+                sb.AppendFormat("Liczba czarnych pionów: {0}\n", cblack);
+                sb.AppendFormat("Liczba białych pionów: {0}\n", cwhite);
+                MessageBox.Show(sb.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 stop_game = true;
             }
 
             if (stop_game)
             {
                 this.panelBlack.Enabled = false;
-                this.panelBlack.Enabled = false;
+                this.panelWhite.Enabled = false;
                 this.richTextBox1.Enabled = false;
                 this.btnBotStep.Enabled = false;
                 this.btnNextTurn.Enabled = false;
@@ -166,6 +148,8 @@ namespace Checkers
             this.DeselectPawn();
             this.UpdateCheckboard();
         }
+
+
 
         public bool MoveSelectedPawnTo(string field_addr)
         {
@@ -272,6 +256,10 @@ namespace Checkers
         {
             Point pselected = new Point(this.selected_col, this.selected_row);
             Point pdest = Pawn.FieldAddressToPoint(field_addr);
+
+            // cel musi być pustym polem
+            if (this.GetPawn(field_addr) != PawnType.None)
+                return false;
 
             Point delta = pdest.Subtract(pselected);
 
@@ -400,7 +388,7 @@ namespace Checkers
                 this.cpu_color == PawnColor.White ? "BOT/CPU" : "CZŁOWIEK"));
 
             this.panelBlack.Enabled = true;
-            this.panelBlack.Enabled = true;
+            this.panelWhite.Enabled = true;
             this.richTextBox1.Enabled = true;
             this.btnBotStep.Enabled = true;
             this.btnNextTurn.Enabled = true;
@@ -424,7 +412,7 @@ namespace Checkers
 
         private void ResetCheckboard()
         {
-            bool test_mode = false;
+            bool test_mode = true;
 
             if (!test_mode)
             {
@@ -453,8 +441,19 @@ namespace Checkers
                         this.pawn_matrix[r, c] = PawnType.BlackPawn;
                 }
 
-            this.pawn_matrix[6, 1] = PawnType.WhitePawn;
-            this.pawn_matrix[6, 3] = PawnType.BlackPawn;
+            this.internalSetPawn("F5", PawnType.BlackPawn);
+            this.internalSetPawn("H5", PawnType.WhiteQueen);
+            this.internalSetPawn("G4", PawnType.BlackPawn);
+            //this.internalSetPawn("H5", PawnType.WhiteQueen);
+            //this.pawn_matrix[6, 3] = PawnType.BlackPawn;
+        }
+
+        private void internalSetPawn(string field_address, PawnType pt)
+        {
+            Point p = Pawn.FieldAddressToPoint(field_address);
+            this.pawn_matrix[p.Y, p.X] = pt;
+
+            //throw new NotImplementedException();
         }
 
         private void btnNextTurn_Click(object sender, EventArgs e)
@@ -500,6 +499,43 @@ namespace Checkers
 
             this.UpdateCheckboard();
             this.CheckStopConditions();
+        }
+
+        private void pion_MouseClick(object sender, MouseEventArgs e)
+        {
+            Keys k = Control.ModifierKeys;
+            string field_address = (sender as Label).Name.Substring(1);
+
+          
+
+            if (this.current_turn == PawnColor.None || this.human_color == PawnColor.None)
+                return;
+
+            // czy użytkownik może przestawiać piony bota (grać zamiast bota - PvP)
+            if (!this.chkAllowMovingBotPawnsByMouse.Checked)
+                if (this.current_turn != this.human_color) // czy ruch CPU/bota?
+                {
+                    System.Media.SystemSounds.Hand.Play();
+                    return;
+                }
+
+            // kliknięcie na pion
+
+            PawnType pointed_color = this.GetPawn(field_address);
+            if (Pawn.EqualColor(this.current_turn, pointed_color))
+            {
+                // człowiek kliknał na inny pion (swój)
+                SelectPawn(field_address);
+                return;
+            }
+
+            if (pointed_color == PawnType.None && this.selected_col != -1 && this.selected_row != -1)
+            {
+                this.movement_done = false;
+                MoveSelectedPawnTo(field_address);
+
+                this.CheckStopConditions();
+            }
         }
 
         private void UpdateCheckboard()
@@ -582,12 +618,23 @@ namespace Checkers
             return this.GetPawn(p);
         }
 
+        private PawnType GetPawn(Point p, PawnType default_type)
+        {
+            try
+            {
+                PawnType pt = GetPawn(p);
+                return pt;
+            } catch(GameException ex)
+            {
+                // ignoruj wyjątek i zwróc typ domyślny
+                return default_type;
+            }
+        }
+
         private PawnType GetPawn(Point p)
         {
-            if (p.X < 0 || p.X > 7)
-                throw new GameException("Niepoprawne współrzędne piona (X)");
-            if (p.Y < 0 || p.Y > 7)
-                throw new GameException("Niepoprawne współrzędne piona (Y)");
+            if (!Pawn.InBound(p))
+                throw new GameException("Niepoprawne współrzędne piona");
             return pawn_matrix[p.Y, p.X];
         }
 
@@ -599,7 +646,11 @@ namespace Checkers
             return pawn_matrix[this.selected_row, this.selected_col];
         }
 
-
+        public PawnType[,] GetCheckboard()
+        {
+            PawnType[,] copy = this.pawn_matrix.Clone() as PawnType[,];
+            return copy;
+        }
     }
 
 
