@@ -101,6 +101,17 @@ namespace Checkers.Utils
             return new Point(col, row);
         }
 
+        /// <summary>Zamienia tablicę adreów pól w postaci tekstowej na tablicę struktur System.Drawing.Point</summary>
+        /// <param name="field_addresses">Tablica tekstowych adresów pól w postaci <b>A1-H8</b> lub <b>11-88</b></param>
+        /// <returns>Tablica współrzędnych pól X=0..7; Y=0..7</returns>
+        public static Point[] FieldAddressToPoint(String[] field_addresses)
+        {
+            if (field_addresses == null)
+                return new Point[0];
+
+            return Array.ConvertAll<String, Point>(field_addresses, new Converter<String, Point>(Pawn.FieldAddressToPoint));
+        }
+
         /// <summary>Zamienia współrzędną numeryczną pola (obiekt System.Drawing.Point) na postać tekstową <b>A1-H8</b></summary>
         /// <param name="p">Współrzędne pola X=0..7; Y=0..7</param>
         /// <returns>Tekstowa reprezentacja współrzędnych pola</returns>
@@ -109,6 +120,18 @@ namespace Checkers.Utils
             String s = string.Format("{0}{1}", (char)('A' + p.Y), (1 + p.X).ToString());
             return s;
         }
+
+        /// <summary>Zamienia współrzędną numeryczną pola (obiekt System.Drawing.Point) na postać tekstową <b>A1-H8</b></summary>
+        /// <param name="points">Tablica współrzędnych pól X=0..7; Y=0..7</param>
+        /// <returns>Tablica tekstowych reprezentacji współrzędnych pól</returns>
+        public static string[] PointToFieldAddress(Point[] points)
+        {
+            if (points == null)
+                return new string[0];
+
+            return Array.ConvertAll<Point, String>(points, new Converter<Point, String>(Pawn.PointToFieldAddress));
+        }
+
 
         public static bool IsNone(PawnType pt)
         {
