@@ -506,7 +506,23 @@ namespace Checkers
             Keys k = Control.ModifierKeys;
             string field_address = (sender as Label).Name.Substring(1);
 
-          
+            if ((k & Keys.Control) != 0)
+            {
+                PawnType pt = GetPawn(field_address);
+                if (pt == PawnType.None)
+                    pt = PawnType.BlackPawn;
+                else if (pt == PawnType.BlackPawn)
+                    pt = PawnType.BlackQueen;
+                else if (pt == PawnType.BlackQueen)
+                    pt = PawnType.WhitePawn;
+                else if (pt == PawnType.WhitePawn)
+                    pt = PawnType.WhiteQueen;
+                else
+                    pt = PawnType.None;
+                internalSetPawn(field_address, pt);
+                this.UpdateCheckboard();
+            }
+
 
             if (this.current_turn == PawnColor.None || this.human_color == PawnColor.None)
                 return;
