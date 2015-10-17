@@ -150,6 +150,137 @@ namespace Checkers
         }
 
 
+        #region Generowanie list możliwych ruchów piona/damy: z biciem i bez bicia
+        public Point[] GetMovementCoordinates(string field_address)
+        {
+            Point pselected = Pawn.FieldAddressToPoint(field_address);
+            List<Point> directions = new List<Point>();
+
+            if (Pawn.IsNormalPawn(this.GetPawn(pselected)))
+            {
+                // sprawdź wszystkie kierunki dla piona
+                Point d1, d2;
+                if (Pawn.GetColor(this.GetPawn(pselected)) == PawnColor.White)
+                {
+                    // białe - tylko w dół
+                    d1 = new Point(1, 1);
+                    d2 = new Point(-1, 1);
+                }
+                else
+                {
+                    // czarne - tylko w górę
+                    d1 = new Point(1, -1);
+                    d2 = new Point(-1, -1);
+                }
+
+                // w najbliższym sąsiedztwie musi być wolne pole
+                foreach (Point delta in new Point[] { d1, d2 })
+                {
+                    Point pn = pselected.Add(delta);
+                    if (Pawn.IsNone(this.GetPawn(pn, PawnType.None)) && Pawn.InBound(pn))
+                        directions.Add(pn);
+                }
+            }
+
+            if (Pawn.IsQueenPawn(this.GetPawn(pselected)))
+            {
+                // sprawdź wszystkie kierunki dla damy
+                foreach (Point delta in new Point[] { new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1) })
+                {
+                    // mozna bić, jeśli pion przeciwnika ma wolne pole po nim (przed może stać dama)
+                    Point p = pselected;
+                    p = p.Add(delta);
+                    while (Pawn.InBound(p))
+                    {
+                        PawnType pt = this.GetPawn(p);
+                        if (!Pawn.IsNone(pt))
+                            break; // już tutaj i dalej dama nie może się poruszać
+
+                        directions.Add(p);
+                        p = p.Add(delta); // przejdź o jedno pole w kierunku pdest
+                    }
+                }
+            }
+            return directions.ToArray();
+        }
+
+        public string[] GetMovementFields(string field_address)
+        {
+            return Pawn.PointToFieldAddress(this.GetMovementCoordinates(field_address));
+        }
+
+        public Point[] GetCaptureCoordinates(string field_address)
+        {
+            Point pselected = Pawn.FieldAddressToPoint(field_address);
+            List<Point> directions = new List<Point>();
+
+            if (Pawn.IsNormalPawn(this.GetPawn(pselected)))
+            {
+                // w najbliższym sąsiedztwie musi być pion/dama o przeciwnym kolorze oraz następne pola muszą być puste
+                foreach (PawnColor pc in new PawnColor[] { PawnColor.White, PawnColor.Black })
+                    foreach (Point delta in new Point[] { new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1) })
+                    {
+                        Point pn = pselected.Add(delta);
+                        Point pnn = pn.Add(delta);
+                        if (!Pawn.InBound(pn) || !Pawn.InBound(pnn))
+                            continue;
+                        if ((Pawn.GetColor(this.GetPawn(pselected)) == pc) &&
+                            (Pawn.GetColor(this.GetPawn(pn, PawnType.None)) == Pawn.GetOpponentColor(pc)) &&
+                            (Pawn.IsNone(this.GetPawn(pnn, PawnType.None))))
+                            directions.Add(pnn);
+                    }
+            }
+
+            if (Pawn.IsQueenPawn(this.GetPawn(pselected)))
+            {
+                PawnColor my_color = Pawn.GetColor(this.GetPawn(pselected));
+                PawnColor opponent_color = Pawn.GetOpponentColor(my_color);
+
+                // dama może bić w każdym kierunku
+                foreach (Point delta in new Point[] { new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1) })
+                {
+                    Point p = pselected;
+                    bool opponent_pawn_found = false;
+                    int capture_count = 0; // licznik zbić dam/pionów przeciwnika
+                    p = p.Add(delta);
+                    while (Pawn.InBound(p))
+                    {
+                        PawnType pt = this.GetPawn(p);
+
+                        // jeśli miejsce jest puste a coś udało mi się zbić, to mogę tutaj postawić damę
+                        if (Pawn.IsNone(pt) && (capture_count > 0))
+                            directions.Add(p);
+
+                        // dama nie może przeskoczyć nad własnym pionem (tego samego koloru)
+                        if (Pawn.GetColor(pt) == my_color)
+                            break;
+
+                        if (!Pawn.IsNone(pt) && opponent_pawn_found) // dwa piony przciwnika pod rząd - nie można bić
+                            break;
+                        opponent_pawn_found = !Pawn.IsNone(pt);
+
+                        if (opponent_pawn_found)
+                            capture_count++;
+
+                        p = p.Add(delta); // przejdź o jedno pole w kierunku pdest
+                    }
+                }
+            }
+
+            return directions.ToArray();
+        }
+
+        public string[] GetCaptureFields(string field_address)
+        {
+            return Pawn.PointToFieldAddress(this.GetCaptureCoordinates(field_address));
+        }
+
+        public bool IsCaptureAvailable(string field_address)
+        {
+            return GetCaptureCoordinates(field_address).Length > 0;
+        }
+        #endregion
+
 
         public bool MoveSelectedPawnTo(string field_addr)
         {
@@ -220,7 +351,7 @@ namespace Checkers
                     // przejdź o jedno pole w kierunku pdest
                     p = new Point(p.X + Math.Sign(delta.X), p.Y + Math.Sign(delta.Y));
 
-                    if (this.GetPawn(p) != PawnType.None) // Zdejmuj pion przeciwnika!
+                    if (!Pawn.IsNone(this.GetPawn(p))) // Zdejmuj pion przeciwnika!
                     {
                         this.pawn_matrix[p.Y, p.X] = PawnType.None;
                         cap_counter++;
@@ -260,6 +391,21 @@ namespace Checkers
             // cel musi być pustym polem
             if (this.GetPawn(field_addr) != PawnType.None)
                 return false;
+
+            // pobierz wszystkie mozliwe ruchy dla piona
+            Point[] simple_moves = this.GetMovementCoordinates(Pawn.PointToFieldAddress(pselected)); // ruchy bez bicia
+            Point[] capture_moves = this.GetCaptureCoordinates(Pawn.PointToFieldAddress(pselected)); // ruchy z biciem
+            Point[] avail_moves = simple_moves.Union(capture_moves).Distinct().ToArray(); //  C# fajny jest :)
+
+            if (true)
+            {
+                Console.WriteLine("CanMoveSelectedPawnTo(): Pion {0} z {1} na {2}", this.GetPawn(pselected), Pawn.PointToFieldAddress(pselected), field_address);
+                Console.WriteLine("  GetMovementCoordinates() = [{0}]", string.Join(", ", Pawn.PointToFieldAddress(simple_moves)));
+                Console.WriteLine("  GetCaptureCoordinates() = [{0}]", string.Join(", ", Pawn.PointToFieldAddress(capture_moves)));
+            }
+
+            return avail_moves.Contains(pdest);
+            /*
 
             Point delta = pdest.Subtract(pselected);
 
@@ -307,15 +453,16 @@ namespace Checkers
                     if (Pawn.GetColor(this.GetPawn(p)) == this.current_turn)
                         return false; // dama nie może przeskoczyć nad własnym pionem (tego samego koloru)
 
-                    if (this.GetPawn(p) != PawnType.None && opponent_pawn_found) // dwa piony przciwnika pod rząd - nie można bić
+                    if (!Pawn.IsNone(this.GetPawn(p)) && opponent_pawn_found) // dwa piony przciwnika pod rząd - nie można bić
                         return false;
-                    opponent_pawn_found = this.GetPawn(p) != PawnType.None;
+                    opponent_pawn_found = !Pawn.IsNone(this.GetPawn(p));
                 }
 
                 return true; // mozna bić!
             }
 
             return false;
+            */
         }
 
 
@@ -504,8 +651,18 @@ namespace Checkers
         private void pion_MouseClick(object sender, MouseEventArgs e)
         {
             Keys k = Control.ModifierKeys;
-            string field_address = (sender as Label).Name.Substring(1);
+            string field_address = (sender as Label).Name.Substring(1); // adres tekstowy pola zawarty jest w nazwie kontrolki, np. pC4 = "C4"
 
+            // kliknięcie prawym przyciskiem myszy na polu wyświetli możliwości ruchu bez oraz ze zbijaniem piona
+            // przeciwnika (pod warunkiem, że na polu jest jakiś pion).
+            if (e.Button == MouseButtons.Right)
+            {
+                Console.WriteLine("GetMovementFields: {0}", string.Join(" ", GetMovementFields(field_address)));
+                Console.WriteLine("GetCaptureFields: {0}", string.Join(" ", GetCaptureFields(field_address)));
+                return;
+            }
+
+            // klikanie na pole z wciśniętym klawiszem Ctrl pozwala zmieniać typ piona (cyklicznie)
             if ((k & Keys.Control) != 0)
             {
                 PawnType pt = GetPawn(field_address);
