@@ -16,13 +16,14 @@ namespace Checkers
     public partial class MainWindow : Form, IBoard
     {
         private Random random;
+        private DebugWindow dbg;
 
         private PawnType[,] pawn_matrix;
         private Label[,] field_matrix;
         private Color[,] selected_color_matrix;
         private Color[,] normal_color_matrix;
 
-        private int selected_row, selected_col;
+        private Point selected_field;
 
         private PawnColor current_turn, cpu_color, human_color;
         private int white_score, black_score;
@@ -36,14 +37,15 @@ namespace Checkers
             InitializeComponent();
             this.Text = this.Text + " - Wersja " + Application.ProductVersion.ToString();
             this.random = new Random();
+            this.dbg = new DebugWindow();
+            this.btnShowDebugWindow_Click(null, null);
 
             this.pawn_matrix = new PawnType[8, 8];
             this.field_matrix = new Label[8, 8];
             this.selected_color_matrix = new Color[8, 8];
             this.normal_color_matrix = new Color[8, 8];
 
-            this.selected_col = -1;
-            this.selected_row = -1;
+            this.selected_field = PointExt.Invalid;
 
             for (int r = 0; r < 8; r++)
                 for (int c = 0; c < 8; c++)
@@ -80,6 +82,9 @@ namespace Checkers
       
         private void CheckStopConditions()
         {
+            if (this.dbg.chkDontCheckStopConditions.Checked)
+                return; // skoro nie, to nie :)
+
             // policz piony
             int cwhite = 0, cblack = 0;
             for(int r = 0; r < 8;r++)
@@ -159,22 +164,24 @@ namespace Checkers
             if (Pawn.IsNormalPawn(this.GetPawn(pselected)))
             {
                 // sprawdź wszystkie kierunki dla piona
+                Point[] deltas;
                 Point d1, d2;
                 if (Pawn.GetColor(this.GetPawn(pselected)) == PawnColor.White)
                 {
                     // białe - tylko w dół
-                    d1 = new Point(1, 1);
-                    d2 = new Point(-1, 1);
+                    deltas = new Point[] { new Point(1, 1), new Point(-1, 1) };
                 }
                 else
                 {
                     // czarne - tylko w górę
-                    d1 = new Point(1, -1);
-                    d2 = new Point(-1, -1);
+                    deltas = new Point[] { new Point(1, -1), new Point(-1, -1) };
                 }
 
+                if (this.dbg.chkAllowNormalPawnMoveBack.Checked) // hack :)
+                    deltas = new Point[] { new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1) }; // wszystkie cztery przekątne
+
                 // w najbliższym sąsiedztwie musi być wolne pole
-                foreach (Point delta in new Point[] { d1, d2 })
+                foreach (Point delta in deltas)
                 {
                     Point pn = pselected.Add(delta);
                     if (Pawn.IsNone(this.GetPawn(pn, PawnType.None)) && Pawn.InBound(pn))
@@ -282,6 +289,7 @@ namespace Checkers
         #endregion
 
 
+
         public bool MoveSelectedPawnTo(string field_addr)
         {
             if (this.movement_done)
@@ -290,7 +298,7 @@ namespace Checkers
             if (!CanMoveSelectedPawnTo(field_addr))
                 return false;
 
-            Point pselected = new Point(this.selected_col, this.selected_row);
+            Point pselected = this.selected_field;
             Point pdest = Pawn.FieldAddressToPoint(field_addr);
 
             Point delta = pdest.Subtract(pselected);
@@ -299,9 +307,10 @@ namespace Checkers
             {
                 if ((Math.Abs(delta.X) == 1 && Math.Abs(delta.Y) == 1)) // przesun pion
                 {
-                    PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                    this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                    this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
+                    //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
+                    //this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    this.InternalMovePawn(pdest, pselected);
 
                     AddPlayerLog(string.Format("Ruch z {0} na {1} (pion)", Pawn.PointToFieldAddress(pselected), Pawn.PointToFieldAddress(pdest)));
                     this.movement_done = true;
@@ -309,9 +318,10 @@ namespace Checkers
 
                 if ((Math.Abs(delta.X) == 2 && Math.Abs(delta.Y) == 2)) // 
                 {
-                    PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                    this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                    this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
+                    //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
+                    //this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    this.InternalMovePawn(pdest, pselected);
 
                     // usun piona przeciwnika i dodaj punkt graczowi
                     Point mid_point = pdest.Midpoint(pselected);
@@ -359,9 +369,10 @@ namespace Checkers
                     }
                 }
 
-                PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                this.InternalMovePawn(pdest, pselected);
+                //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
+                //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
+                //this.pawn_matrix[pdest.Y, pdest.X] = pc;
 
                 // punkty
                 if (cap_counter > 0)
@@ -381,15 +392,21 @@ namespace Checkers
             return true;
         }
 
-
-
-        public bool CanMoveSelectedPawnTo(string field_addr)
+        private void InternalMovePawn(Point dest, Point source)
         {
-            Point pselected = new Point(this.selected_col, this.selected_row);
-            Point pdest = Pawn.FieldAddressToPoint(field_addr);
+            PawnType pc = this.pawn_matrix[source.Y, source.X];
+            this.pawn_matrix[source.Y, source.X] = PawnType.None;
+            this.pawn_matrix[dest.Y, dest.X] = pc;
+        }
+
+
+        public bool CanMoveSelectedPawnTo(string field_address)
+        {
+            Point pselected = this.selected_field;
+            Point pdest = Pawn.FieldAddressToPoint(field_address);
 
             // cel musi być pustym polem
-            if (this.GetPawn(field_addr) != PawnType.None)
+            if (!Pawn.IsNone(this.GetPawn(field_address)))
                 return false;
 
             // pobierz wszystkie mozliwe ruchy dla piona
@@ -471,13 +488,12 @@ namespace Checkers
         public void DeselectPawn()
         {
 
-            if (this.selected_col == -1 && this.selected_row == -1)
+            if (this.selected_field.IsInvalid())
                 return;
 
-            this.field_matrix[this.selected_row, this.selected_col].BorderStyle = BorderStyle.None;
-            this.field_matrix[this.selected_row, this.selected_col].BackColor = this.normal_color_matrix[this.selected_row, this.selected_col];
-            this.selected_col = -1;
-            this.selected_row = -1;
+            this.field_matrix[this.selected_field.Y, this.selected_field.X].BorderStyle = BorderStyle.None;
+            this.field_matrix[this.selected_field.Y, this.selected_field.X].BackColor = this.normal_color_matrix[this.selected_field.Y, this.selected_field.X];
+            this.selected_field = PointExt.Invalid;
         }
 
 
@@ -495,7 +511,7 @@ namespace Checkers
 
             Point p = Pawn.FieldAddressToPoint(field_address);
 
-            if (p.Y == this.selected_row && p.X == this.selected_col)
+            if (p == this.selected_field)
                 return pawn_matrix[p.Y, p.X];
 
             DeselectPawn();
@@ -503,15 +519,21 @@ namespace Checkers
             PawnType cl = pawn_matrix[p.Y, p.X];
             if (cl != PawnType.None)
             {
-                this.selected_col = p.X;
-                this.selected_row = p.Y;
-                this.field_matrix[this.selected_row, this.selected_col].BorderStyle = BorderStyle.FixedSingle;
-                this.field_matrix[this.selected_row, this.selected_col].BackColor = this.selected_color_matrix[this.selected_row, this.selected_col];
+                this.selected_field = p;
+                this.field_matrix[p.Y, p.X].BorderStyle = BorderStyle.FixedSingle;
+                this.field_matrix[p.Y, p.X].BackColor = this.selected_color_matrix[p.Y, p.X];
             }
 
             return cl;
         }
-        
+
+        private void internalSetPawn(string field_address, PawnType pt)
+        {
+            Point p = Pawn.FieldAddressToPoint(field_address);
+            this.pawn_matrix[p.Y, p.X] = pt;
+        }
+
+        #region Obsługa GUI
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
@@ -595,14 +617,6 @@ namespace Checkers
             //this.pawn_matrix[6, 3] = PawnType.BlackPawn;
         }
 
-        private void internalSetPawn(string field_address, PawnType pt)
-        {
-            Point p = Pawn.FieldAddressToPoint(field_address);
-            this.pawn_matrix[p.Y, p.X] = pt;
-
-            //throw new NotImplementedException();
-        }
-
         private void btnNextTurn_Click(object sender, EventArgs e)
         {
             // zabierz jeden punkt
@@ -648,7 +662,15 @@ namespace Checkers
             this.CheckStopConditions();
         }
 
-        private void pion_MouseClick(object sender, MouseEventArgs e)
+        private void btnShowDebugWindow_Click(object sender, EventArgs e)
+        {
+            if (sender != null)
+                this.dbg.ShowDialog();
+            this.btnShowDebugWindow.ForeColor = this.dbg.IsAny() ? Color.Red : SystemColors.ControlText;
+
+        }
+
+        private void field_MouseClick(object sender, MouseEventArgs e)
         {
             Keys k = Control.ModifierKeys;
             string field_address = (sender as Label).Name.Substring(1); // adres tekstowy pola zawarty jest w nazwie kontrolki, np. pC4 = "C4"
@@ -685,7 +707,7 @@ namespace Checkers
                 return;
 
             // czy użytkownik może przestawiać piony bota (grać zamiast bota - PvP)
-            if (!this.chkAllowMovingBotPawnsByMouse.Checked)
+            if (!this.dbg.chkAllowMovingBotPawnsByMouse.Checked)
                 if (this.current_turn != this.human_color) // czy ruch CPU/bota?
                 {
                     System.Media.SystemSounds.Hand.Play();
@@ -702,7 +724,7 @@ namespace Checkers
                 return;
             }
 
-            if (pointed_color == PawnType.None && this.selected_col != -1 && this.selected_row != -1)
+            if (pointed_color == PawnType.None && !this.selected_field.IsInvalid())
             {
                 this.movement_done = false;
                 MoveSelectedPawnTo(field_address);
@@ -784,6 +806,7 @@ namespace Checkers
             this.lblWhitePoints.Text = this.white_score.ToString();
         }
 
+        #endregion
 
         public PawnType GetPawn(string field_address)
         {
@@ -793,15 +816,10 @@ namespace Checkers
 
         private PawnType GetPawn(Point p, PawnType default_type)
         {
-            try
-            {
-                PawnType pt = GetPawn(p);
-                return pt;
-            } catch(GameException ex)
-            {
-                // ignoruj wyjątek i zwróc typ domyślny
+            if (!Pawn.InBound(p))
                 return default_type;
-            }
+
+            return GetPawn(p);
         }
 
         private PawnType GetPawn(Point p)
@@ -813,10 +831,10 @@ namespace Checkers
 
         public PawnType GetSelectedPawn()
         {
-            if (this.selected_col == -1 || this.selected_row == -1)
+            if (this.selected_field.IsInvalid())
                 return PawnType.None;
 
-            return pawn_matrix[this.selected_row, this.selected_col];
+            return pawn_matrix[this.selected_field.Y, this.selected_field.X];
         }
 
         public PawnType[,] GetCheckboard()

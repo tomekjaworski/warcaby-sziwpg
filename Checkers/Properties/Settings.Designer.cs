@@ -22,5 +22,41 @@ namespace Checkers.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool debug_allow_pawn_move_back {
+            get {
+                return ((bool)(this["debug_allow_pawn_move_back"]));
+            }
+            set {
+                this["debug_allow_pawn_move_back"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool debug_dont_check_stop_conds {
+            get {
+                return ((bool)(this["debug_dont_check_stop_conds"]));
+            }
+            set {
+                this["debug_dont_check_stop_conds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool debug_play_as_bot {
+            get {
+                return ((bool)(this["debug_play_as_bot"]));
+            }
+            set {
+                this["debug_play_as_bot"] = value;
+            }
+        }
     }
 }

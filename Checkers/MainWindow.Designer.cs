@@ -134,7 +134,7 @@
             this.lblBotDescription = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btnNextTurn = new System.Windows.Forms.Button();
-            this.chkAllowMovingBotPawnsByMouse = new System.Windows.Forms.CheckBox();
+            this.btnShowDebugWindow = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panelWhite.SuspendLayout();
             this.panelBlack.SuspendLayout();
@@ -149,7 +149,7 @@
             this.pA1.Name = "pA1";
             this.pA1.Size = new System.Drawing.Size(36, 36);
             this.pA1.TabIndex = 1;
-            this.pA1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA2
             // 
@@ -159,7 +159,7 @@
             this.pA2.Name = "pA2";
             this.pA2.Size = new System.Drawing.Size(36, 36);
             this.pA2.TabIndex = 2;
-            this.pA2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA3
             // 
@@ -169,7 +169,7 @@
             this.pA3.Name = "pA3";
             this.pA3.Size = new System.Drawing.Size(36, 36);
             this.pA3.TabIndex = 2;
-            this.pA3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA4
             // 
@@ -179,7 +179,7 @@
             this.pA4.Name = "pA4";
             this.pA4.Size = new System.Drawing.Size(36, 36);
             this.pA4.TabIndex = 2;
-            this.pA4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA5
             // 
@@ -189,7 +189,7 @@
             this.pA5.Name = "pA5";
             this.pA5.Size = new System.Drawing.Size(36, 36);
             this.pA5.TabIndex = 2;
-            this.pA5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA6
             // 
@@ -199,7 +199,7 @@
             this.pA6.Name = "pA6";
             this.pA6.Size = new System.Drawing.Size(36, 36);
             this.pA6.TabIndex = 2;
-            this.pA6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA7
             // 
@@ -209,7 +209,7 @@
             this.pA7.Name = "pA7";
             this.pA7.Size = new System.Drawing.Size(36, 36);
             this.pA7.TabIndex = 2;
-            this.pA7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pA8
             // 
@@ -219,7 +219,7 @@
             this.pA8.Name = "pA8";
             this.pA8.Size = new System.Drawing.Size(36, 36);
             this.pA8.TabIndex = 2;
-            this.pA8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pA8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB8
             // 
@@ -229,7 +229,7 @@
             this.pB8.Name = "pB8";
             this.pB8.Size = new System.Drawing.Size(36, 36);
             this.pB8.TabIndex = 4;
-            this.pB8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB7
             // 
@@ -239,7 +239,7 @@
             this.pB7.Name = "pB7";
             this.pB7.Size = new System.Drawing.Size(36, 36);
             this.pB7.TabIndex = 5;
-            this.pB7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB6
             // 
@@ -249,7 +249,7 @@
             this.pB6.Name = "pB6";
             this.pB6.Size = new System.Drawing.Size(36, 36);
             this.pB6.TabIndex = 6;
-            this.pB6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB5
             // 
@@ -259,7 +259,7 @@
             this.pB5.Name = "pB5";
             this.pB5.Size = new System.Drawing.Size(36, 36);
             this.pB5.TabIndex = 7;
-            this.pB5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB4
             // 
@@ -269,7 +269,7 @@
             this.pB4.Name = "pB4";
             this.pB4.Size = new System.Drawing.Size(36, 36);
             this.pB4.TabIndex = 8;
-            this.pB4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB3
             // 
@@ -279,7 +279,7 @@
             this.pB3.Name = "pB3";
             this.pB3.Size = new System.Drawing.Size(36, 36);
             this.pB3.TabIndex = 9;
-            this.pB3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB2
             // 
@@ -289,7 +289,7 @@
             this.pB2.Name = "pB2";
             this.pB2.Size = new System.Drawing.Size(36, 36);
             this.pB2.TabIndex = 10;
-            this.pB2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pB1
             // 
@@ -299,7 +299,7 @@
             this.pB1.Name = "pB1";
             this.pB1.Size = new System.Drawing.Size(36, 36);
             this.pB1.TabIndex = 3;
-            this.pB1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pB1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC8
             // 
@@ -309,7 +309,7 @@
             this.pC8.Name = "pC8";
             this.pC8.Size = new System.Drawing.Size(36, 36);
             this.pC8.TabIndex = 12;
-            this.pC8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC7
             // 
@@ -319,7 +319,7 @@
             this.pC7.Name = "pC7";
             this.pC7.Size = new System.Drawing.Size(36, 36);
             this.pC7.TabIndex = 13;
-            this.pC7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pc6
             // 
@@ -329,7 +329,7 @@
             this.pc6.Name = "pc6";
             this.pc6.Size = new System.Drawing.Size(36, 36);
             this.pc6.TabIndex = 14;
-            this.pc6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pc6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC5
             // 
@@ -339,7 +339,7 @@
             this.pC5.Name = "pC5";
             this.pC5.Size = new System.Drawing.Size(36, 36);
             this.pC5.TabIndex = 15;
-            this.pC5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC4
             // 
@@ -349,7 +349,7 @@
             this.pC4.Name = "pC4";
             this.pC4.Size = new System.Drawing.Size(36, 36);
             this.pC4.TabIndex = 16;
-            this.pC4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC3
             // 
@@ -359,7 +359,7 @@
             this.pC3.Name = "pC3";
             this.pC3.Size = new System.Drawing.Size(36, 36);
             this.pC3.TabIndex = 17;
-            this.pC3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC2
             // 
@@ -369,7 +369,7 @@
             this.pC2.Name = "pC2";
             this.pC2.Size = new System.Drawing.Size(36, 36);
             this.pC2.TabIndex = 18;
-            this.pC2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pC1
             // 
@@ -379,7 +379,7 @@
             this.pC1.Name = "pC1";
             this.pC1.Size = new System.Drawing.Size(36, 36);
             this.pC1.TabIndex = 11;
-            this.pC1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pC1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD8
             // 
@@ -389,7 +389,7 @@
             this.pD8.Name = "pD8";
             this.pD8.Size = new System.Drawing.Size(36, 36);
             this.pD8.TabIndex = 20;
-            this.pD8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD7
             // 
@@ -399,7 +399,7 @@
             this.pD7.Name = "pD7";
             this.pD7.Size = new System.Drawing.Size(36, 36);
             this.pD7.TabIndex = 21;
-            this.pD7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD6
             // 
@@ -409,7 +409,7 @@
             this.pD6.Name = "pD6";
             this.pD6.Size = new System.Drawing.Size(36, 36);
             this.pD6.TabIndex = 22;
-            this.pD6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD5
             // 
@@ -419,7 +419,7 @@
             this.pD5.Name = "pD5";
             this.pD5.Size = new System.Drawing.Size(36, 36);
             this.pD5.TabIndex = 23;
-            this.pD5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD4
             // 
@@ -429,7 +429,7 @@
             this.pD4.Name = "pD4";
             this.pD4.Size = new System.Drawing.Size(36, 36);
             this.pD4.TabIndex = 24;
-            this.pD4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD3
             // 
@@ -439,7 +439,7 @@
             this.pD3.Name = "pD3";
             this.pD3.Size = new System.Drawing.Size(36, 36);
             this.pD3.TabIndex = 25;
-            this.pD3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD2
             // 
@@ -449,7 +449,7 @@
             this.pD2.Name = "pD2";
             this.pD2.Size = new System.Drawing.Size(36, 36);
             this.pD2.TabIndex = 26;
-            this.pD2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pD1
             // 
@@ -459,7 +459,7 @@
             this.pD1.Name = "pD1";
             this.pD1.Size = new System.Drawing.Size(36, 36);
             this.pD1.TabIndex = 19;
-            this.pD1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pD1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH8
             // 
@@ -469,7 +469,7 @@
             this.pH8.Name = "pH8";
             this.pH8.Size = new System.Drawing.Size(36, 36);
             this.pH8.TabIndex = 52;
-            this.pH8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH7
             // 
@@ -479,7 +479,7 @@
             this.pH7.Name = "pH7";
             this.pH7.Size = new System.Drawing.Size(36, 36);
             this.pH7.TabIndex = 53;
-            this.pH7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH6
             // 
@@ -489,7 +489,7 @@
             this.pH6.Name = "pH6";
             this.pH6.Size = new System.Drawing.Size(36, 36);
             this.pH6.TabIndex = 54;
-            this.pH6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH5
             // 
@@ -499,7 +499,7 @@
             this.pH5.Name = "pH5";
             this.pH5.Size = new System.Drawing.Size(36, 36);
             this.pH5.TabIndex = 55;
-            this.pH5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH4
             // 
@@ -509,7 +509,7 @@
             this.pH4.Name = "pH4";
             this.pH4.Size = new System.Drawing.Size(36, 36);
             this.pH4.TabIndex = 56;
-            this.pH4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH3
             // 
@@ -519,7 +519,7 @@
             this.pH3.Name = "pH3";
             this.pH3.Size = new System.Drawing.Size(36, 36);
             this.pH3.TabIndex = 57;
-            this.pH3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH2
             // 
@@ -529,7 +529,7 @@
             this.pH2.Name = "pH2";
             this.pH2.Size = new System.Drawing.Size(36, 36);
             this.pH2.TabIndex = 58;
-            this.pH2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pH1
             // 
@@ -539,7 +539,7 @@
             this.pH1.Name = "pH1";
             this.pH1.Size = new System.Drawing.Size(36, 36);
             this.pH1.TabIndex = 51;
-            this.pH1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pH1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG8
             // 
@@ -549,7 +549,7 @@
             this.pG8.Name = "pG8";
             this.pG8.Size = new System.Drawing.Size(36, 36);
             this.pG8.TabIndex = 44;
-            this.pG8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG7
             // 
@@ -559,7 +559,7 @@
             this.pG7.Name = "pG7";
             this.pG7.Size = new System.Drawing.Size(36, 36);
             this.pG7.TabIndex = 45;
-            this.pG7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG6
             // 
@@ -569,7 +569,7 @@
             this.pG6.Name = "pG6";
             this.pG6.Size = new System.Drawing.Size(36, 36);
             this.pG6.TabIndex = 46;
-            this.pG6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG5
             // 
@@ -579,7 +579,7 @@
             this.pG5.Name = "pG5";
             this.pG5.Size = new System.Drawing.Size(36, 36);
             this.pG5.TabIndex = 47;
-            this.pG5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG4
             // 
@@ -590,7 +590,7 @@
             this.pG4.Name = "pG4";
             this.pG4.Size = new System.Drawing.Size(36, 36);
             this.pG4.TabIndex = 48;
-            this.pG4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG3
             // 
@@ -600,7 +600,7 @@
             this.pG3.Name = "pG3";
             this.pG3.Size = new System.Drawing.Size(36, 36);
             this.pG3.TabIndex = 49;
-            this.pG3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG2
             // 
@@ -610,7 +610,7 @@
             this.pG2.Name = "pG2";
             this.pG2.Size = new System.Drawing.Size(36, 36);
             this.pG2.TabIndex = 50;
-            this.pG2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pG1
             // 
@@ -620,7 +620,7 @@
             this.pG1.Name = "pG1";
             this.pG1.Size = new System.Drawing.Size(36, 36);
             this.pG1.TabIndex = 43;
-            this.pG1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pG1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF8
             // 
@@ -630,7 +630,7 @@
             this.pF8.Name = "pF8";
             this.pF8.Size = new System.Drawing.Size(36, 36);
             this.pF8.TabIndex = 36;
-            this.pF8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE8
             // 
@@ -640,7 +640,7 @@
             this.pE8.Name = "pE8";
             this.pE8.Size = new System.Drawing.Size(36, 36);
             this.pE8.TabIndex = 34;
-            this.pE8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF7
             // 
@@ -650,7 +650,7 @@
             this.pF7.Name = "pF7";
             this.pF7.Size = new System.Drawing.Size(36, 36);
             this.pF7.TabIndex = 37;
-            this.pF7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE7
             // 
@@ -660,7 +660,7 @@
             this.pE7.Name = "pE7";
             this.pE7.Size = new System.Drawing.Size(36, 36);
             this.pE7.TabIndex = 33;
-            this.pE7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF6
             // 
@@ -670,7 +670,7 @@
             this.pF6.Name = "pF6";
             this.pF6.Size = new System.Drawing.Size(36, 36);
             this.pF6.TabIndex = 38;
-            this.pF6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE6
             // 
@@ -680,7 +680,7 @@
             this.pE6.Name = "pE6";
             this.pE6.Size = new System.Drawing.Size(36, 36);
             this.pE6.TabIndex = 32;
-            this.pE6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF5
             // 
@@ -690,7 +690,7 @@
             this.pF5.Name = "pF5";
             this.pF5.Size = new System.Drawing.Size(36, 36);
             this.pF5.TabIndex = 39;
-            this.pF5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE5
             // 
@@ -700,7 +700,7 @@
             this.pE5.Name = "pE5";
             this.pE5.Size = new System.Drawing.Size(36, 36);
             this.pE5.TabIndex = 31;
-            this.pE5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF4
             // 
@@ -710,7 +710,7 @@
             this.pF4.Name = "pF4";
             this.pF4.Size = new System.Drawing.Size(36, 36);
             this.pF4.TabIndex = 40;
-            this.pF4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE4
             // 
@@ -720,7 +720,7 @@
             this.pE4.Name = "pE4";
             this.pE4.Size = new System.Drawing.Size(36, 36);
             this.pE4.TabIndex = 30;
-            this.pE4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF3
             // 
@@ -730,7 +730,7 @@
             this.pF3.Name = "pF3";
             this.pF3.Size = new System.Drawing.Size(36, 36);
             this.pF3.TabIndex = 41;
-            this.pF3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE3
             // 
@@ -740,7 +740,7 @@
             this.pE3.Name = "pE3";
             this.pE3.Size = new System.Drawing.Size(36, 36);
             this.pE3.TabIndex = 29;
-            this.pE3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF2
             // 
@@ -750,7 +750,7 @@
             this.pF2.Name = "pF2";
             this.pF2.Size = new System.Drawing.Size(36, 36);
             this.pF2.TabIndex = 42;
-            this.pF2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE2
             // 
@@ -760,7 +760,7 @@
             this.pE2.Name = "pE2";
             this.pE2.Size = new System.Drawing.Size(36, 36);
             this.pE2.TabIndex = 28;
-            this.pE2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pF1
             // 
@@ -770,7 +770,7 @@
             this.pF1.Name = "pF1";
             this.pF1.Size = new System.Drawing.Size(36, 36);
             this.pF1.TabIndex = 35;
-            this.pF1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pF1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // pE1
             // 
@@ -780,7 +780,7 @@
             this.pE1.Name = "pE1";
             this.pE1.Size = new System.Drawing.Size(36, 36);
             this.pE1.TabIndex = 27;
-            this.pE1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pion_MouseClick);
+            this.pE1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.field_MouseClick);
             // 
             // label1
             // 
@@ -1302,22 +1302,21 @@
             this.btnNextTurn.UseVisualStyleBackColor = true;
             this.btnNextTurn.Click += new System.EventHandler(this.btnNextTurn_Click);
             // 
-            // chkAllowMovingBotPawnsByMouse
+            // btnShowDebugWindow
             // 
-            this.chkAllowMovingBotPawnsByMouse.AutoSize = true;
-            this.chkAllowMovingBotPawnsByMouse.Location = new System.Drawing.Point(349, 322);
-            this.chkAllowMovingBotPawnsByMouse.Name = "chkAllowMovingBotPawnsByMouse";
-            this.chkAllowMovingBotPawnsByMouse.Size = new System.Drawing.Size(228, 17);
-            this.chkAllowMovingBotPawnsByMouse.TabIndex = 98;
-            this.chkAllowMovingBotPawnsByMouse.Text = "DEBUG: Pozwól ruszać piony bota myszką";
-            this.chkAllowMovingBotPawnsByMouse.UseVisualStyleBackColor = true;
+            this.btnShowDebugWindow.Location = new System.Drawing.Point(388, 316);
+            this.btnShowDebugWindow.Name = "btnShowDebugWindow";
+            this.btnShowDebugWindow.Size = new System.Drawing.Size(136, 23);
+            this.btnShowDebugWindow.TabIndex = 98;
+            this.btnShowDebugWindow.Text = "Opcje uruchomieniowe";
+            this.btnShowDebugWindow.UseVisualStyleBackColor = true;
+            this.btnShowDebugWindow.Click += new System.EventHandler(this.btnShowDebugWindow_Click);
             // 
             // MainWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(600, 600);
-            this.Controls.Add(this.chkAllowMovingBotPawnsByMouse);
+            this.Controls.Add(this.btnShowDebugWindow);
             this.Controls.Add(this.btnNextTurn);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.lblAbout);
@@ -1470,7 +1469,7 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label lblBlackPoints;
         private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.CheckBox chkAllowMovingBotPawnsByMouse;
+        private System.Windows.Forms.Button btnShowDebugWindow;
     }
 }
 

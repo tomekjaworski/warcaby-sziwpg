@@ -9,6 +9,21 @@ namespace Checkers.Utils
     public static class PointExt
     {
         /// <summary>
+        /// Współrzędne nieokreślone; nie wskazują żadnego pola na planszy
+        /// </summary>
+        public static readonly Point Invalid = new Point(-1, -1);
+
+        /// <summary>
+        /// Sprawdza, czy punkt wskazuje istniejące pole planszy
+        /// </summary>
+        /// <param name="p">Wspołrzędna numeryczna</param>
+        /// <returns>True jeśli punkt nie wskazuje pola na planszy</returns>
+        public static bool IsInvalid(this Point p)
+        {
+            return p == PointExt.Invalid;
+        }
+        
+        /// <summary>
         /// Odejmuje punkt p2 od punktu p1 (po współrzędnych)
         /// </summary>
         /// <param name="p1">Lewa strona</param>
