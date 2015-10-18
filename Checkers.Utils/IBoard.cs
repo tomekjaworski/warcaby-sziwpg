@@ -43,9 +43,8 @@ namespace Checkers.Utils
         /// Przesuń pion/damke na wybrane pole. Jesli po drodze znajdują się piony przeciwnika i można je usunać z planszy to zrób to.
         /// </summary>
         /// <param name="field_address">Adres docelowego pola (np. "C3")</param>
-        /// <returns>True jeśli udało się wykonać ruch</returns>
-        bool MoveSelectedPawnTo(string field_address);
-
+        /// <returns>Krótka informacja o zmianie stanu planszy podczas wykonywania ruchu <seealso cref="PawnMoveResult"/></returns>
+        PawnMoveResult MoveSelectedPawnTo(string field_address);
 
         /// <summary>Pobiera zawartość całej planszy (tablica 8x8)<br/>Pierwsza współrzędna - wiersze<br/>Druga współrzędna - kolumny</summary>
         /// <returns></returns>
@@ -53,23 +52,10 @@ namespace Checkers.Utils
 
         /// <summary>Pobierz listę współrzędnych pól na które pion, spod adresu <i>field_address</i>, może się przesunąć <b>BEZ</b> zbijania pionów przeciwnika.</summary>
         /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
-        /// <seealso cref="IBoard.GetMovementFields(string)"/>
-        /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
-        /// <returns>Lista współrzędnych w postaci Point[]</returns>
-        Point[] GetMovementCoordinates(string field_address);
-
-        /// <summary>Pobierz listę współrzędnych pól na które pion, spod adresu <i>field_address</i>, może się przesunąć <b>BEZ</b> zbijania pionów przeciwnika.</summary>
-        /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
         /// <seealso cref="IBoard.GetMovementCoordinates(string)"/>
         /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
         /// <returns>Lista współrzędnych w postaci adresów pól String[]</returns>
         string[] GetMovementFields(string field_address);
-
-        /// <summary>Pobierz listę współrzędnych pól na które pion, spod adresu <i>field_address</i>, może się przesunąć <b>POD WARUNKIEM</b> zbicia choć jednego piona przeciwnika.</summary>
-        /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
-        /// <seealso cref="IBoard.GetCaptureFields(string)"/>
-        /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
-        Point[] GetCaptureCoordinates(string field_address);
 
         /// <summary>Pobierz listę współrzędnych pól na które pion, spod adresu <i>field_address</i>, może się przesunąć <b>POD WARUNKIEM</b> zbicia choć jednego piona przeciwnika.</summary>
         /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>

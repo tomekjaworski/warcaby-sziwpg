@@ -31,10 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugWindow));
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnOk = new System.Windows.Forms.Button();
+            this.chk4PawnNewGame = new System.Windows.Forms.CheckBox();
+            this.chkAllowNormalPawnMoveBack = new System.Windows.Forms.CheckBox();
             this.chkDontCheckStopConditions = new System.Windows.Forms.CheckBox();
             this.chkAllowMovingBotPawnsByMouse = new System.Windows.Forms.CheckBox();
-            this.chkAllowNormalPawnMoveBack = new System.Windows.Forms.CheckBox();
-            this.btnOk = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,12 +58,47 @@
             this.panel1.Size = new System.Drawing.Size(469, 85);
             this.panel1.TabIndex = 1;
             // 
+            // btnOk
+            // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOk.Location = new System.Drawing.Point(382, 207);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(75, 23);
+            this.btnOk.TabIndex = 103;
+            this.btnOk.Text = "Ok";
+            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+            // 
+            // chk4PawnNewGame
+            // 
+            this.chk4PawnNewGame.AutoSize = true;
+            this.chk4PawnNewGame.Checked = global::Checkers.Properties.Settings.Default.debug_4pawn_start;
+            this.chk4PawnNewGame.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Checkers.Properties.Settings.Default, "debug_4pawn_start", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chk4PawnNewGame.Location = new System.Drawing.Point(19, 172);
+            this.chk4PawnNewGame.Name = "chk4PawnNewGame";
+            this.chk4PawnNewGame.Size = new System.Drawing.Size(322, 17);
+            this.chk4PawnNewGame.TabIndex = 104;
+            this.chk4PawnNewGame.Text = "DEBUG: Nowa gra z dwoma pionami czarnymi i dwoma białymi";
+            this.chk4PawnNewGame.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowNormalPawnMoveBack
+            // 
+            this.chkAllowNormalPawnMoveBack.AutoSize = true;
+            this.chkAllowNormalPawnMoveBack.Checked = global::Checkers.Properties.Settings.Default.debug_allow_pawn_move_back;
+            this.chkAllowNormalPawnMoveBack.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Checkers.Properties.Settings.Default, "debug_allow_pawn_move_back", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chkAllowNormalPawnMoveBack.Location = new System.Drawing.Point(19, 149);
+            this.chkAllowNormalPawnMoveBack.Name = "chkAllowNormalPawnMoveBack";
+            this.chkAllowNormalPawnMoveBack.Size = new System.Drawing.Size(264, 17);
+            this.chkAllowNormalPawnMoveBack.TabIndex = 102;
+            this.chkAllowNormalPawnMoveBack.Text = "DEBUG: Pozwól na ruch zwykłych pionów do tyłu";
+            this.chkAllowNormalPawnMoveBack.UseVisualStyleBackColor = true;
+            // 
             // chkDontCheckStopConditions
             // 
             this.chkDontCheckStopConditions.AutoSize = true;
             this.chkDontCheckStopConditions.Checked = global::Checkers.Properties.Settings.Default.debug_dont_check_stop_conds;
             this.chkDontCheckStopConditions.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Checkers.Properties.Settings.Default, "debug_dont_check_stop_conds", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chkDontCheckStopConditions.Location = new System.Drawing.Point(19, 149);
+            this.chkDontCheckStopConditions.Location = new System.Drawing.Point(19, 126);
             this.chkDontCheckStopConditions.Name = "chkDontCheckStopConditions";
             this.chkDontCheckStopConditions.Size = new System.Drawing.Size(268, 17);
             this.chkDontCheckStopConditions.TabIndex = 101;
@@ -74,40 +110,19 @@
             this.chkAllowMovingBotPawnsByMouse.AutoSize = true;
             this.chkAllowMovingBotPawnsByMouse.Checked = global::Checkers.Properties.Settings.Default.debug_play_as_bot;
             this.chkAllowMovingBotPawnsByMouse.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Checkers.Properties.Settings.Default, "debug_play_as_bot", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chkAllowMovingBotPawnsByMouse.Location = new System.Drawing.Point(19, 126);
+            this.chkAllowMovingBotPawnsByMouse.Location = new System.Drawing.Point(19, 103);
             this.chkAllowMovingBotPawnsByMouse.Name = "chkAllowMovingBotPawnsByMouse";
             this.chkAllowMovingBotPawnsByMouse.Size = new System.Drawing.Size(228, 17);
             this.chkAllowMovingBotPawnsByMouse.TabIndex = 100;
             this.chkAllowMovingBotPawnsByMouse.Text = "DEBUG: Pozwól ruszać piony bota myszką";
             this.chkAllowMovingBotPawnsByMouse.UseVisualStyleBackColor = true;
             // 
-            // chkAllowNormalPawnMoveBack
-            // 
-            this.chkAllowNormalPawnMoveBack.AutoSize = true;
-            this.chkAllowNormalPawnMoveBack.Checked = global::Checkers.Properties.Settings.Default.debug_allow_pawn_move_back;
-            this.chkAllowNormalPawnMoveBack.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Checkers.Properties.Settings.Default, "debug_allow_pawn_move_back", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chkAllowNormalPawnMoveBack.Location = new System.Drawing.Point(19, 172);
-            this.chkAllowNormalPawnMoveBack.Name = "chkAllowNormalPawnMoveBack";
-            this.chkAllowNormalPawnMoveBack.Size = new System.Drawing.Size(264, 17);
-            this.chkAllowNormalPawnMoveBack.TabIndex = 102;
-            this.chkAllowNormalPawnMoveBack.Text = "DEBUG: Pozwól na ruch zwykłych pionów do tyłu";
-            this.chkAllowNormalPawnMoveBack.UseVisualStyleBackColor = true;
-            // 
-            // btnOk
-            // 
-            this.btnOk.Location = new System.Drawing.Point(382, 205);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 103;
-            this.btnOk.Text = "Ok";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            // 
             // DebugWindow
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(469, 240);
+            this.ClientSize = new System.Drawing.Size(469, 242);
+            this.Controls.Add(this.chk4PawnNewGame);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.chkAllowNormalPawnMoveBack);
             this.Controls.Add(this.chkDontCheckStopConditions);
@@ -131,5 +146,6 @@
         public System.Windows.Forms.CheckBox chkDontCheckStopConditions;
         public System.Windows.Forms.CheckBox chkAllowMovingBotPawnsByMouse;
         public System.Windows.Forms.CheckBox chkAllowNormalPawnMoveBack;
+        public System.Windows.Forms.CheckBox chk4PawnNewGame;
     }
 }

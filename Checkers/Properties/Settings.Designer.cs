@@ -58,5 +58,17 @@ namespace Checkers.Properties {
                 this["debug_play_as_bot"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool debug_4pawn_start {
+            get {
+                return ((bool)(this["debug_4pawn_start"]));
+            }
+            set {
+                this["debug_4pawn_start"] = value;
+            }
+        }
     }
 }

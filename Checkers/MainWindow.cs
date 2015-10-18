@@ -30,7 +30,7 @@ namespace Checkers
         private int white_counter_old, black_counter_old, stagnation_counter;
 
         private IBotEngine bot;
-        private bool movement_done;
+        private int move_count, capture_count;
 
         public MainWindow()
         {
@@ -62,7 +62,7 @@ namespace Checkers
             this.current_turn = PawnColor.None;
             this.cpu_color = PawnColor.None;
             this.human_color = PawnColor.None;
-            this.UpdateCheckboard();
+            this.ShowGameState();
 
             // uruchomienie bota
             this.bot = new MojBot();
@@ -80,10 +80,10 @@ namespace Checkers
         }
 
       
-        private void CheckStopConditions()
+        private bool CheckStopConditions()
         {
             if (this.dbg.chkDontCheckStopConditions.Checked)
-                return; // skoro nie, to nie :)
+                return false; // skoro nie, to nie :)
 
             // policz piony
             int cwhite = 0, cblack = 0;
@@ -141,19 +141,82 @@ namespace Checkers
                 this.panelBlack.Enabled = false;
                 this.panelWhite.Enabled = false;
                 this.richTextBox1.Enabled = false;
-                this.btnBotStep.Enabled = false;
-                this.btnNextTurn.Enabled = false;
+                this.btnDoBotMove.Enabled = false;
+                this.btnEndTurn.Enabled = false;
             }
+            return stop_game;
         }
 
-        private void NextTurn()
+        private void EndTurn(bool new_game)
         {
-            this.current_turn = this.current_turn == PawnColor.Black ? PawnColor.White : PawnColor.Black;
-            //this.movement_done = false;
-            this.DeselectPawn();
-            this.UpdateCheckboard();
-        }
+            // test
+            bool test = false;
+            test |= move_count == 1 && capture_count == 0;  // był tylko ruch
+            test |= move_count == 0 && capture_count >= 1;  // było jedno lub więcej bić
+            test |= !(move_count > 0 && move_count > 0);    // niemozliwe: ruch i bicie
+            Debug.Assert(test);
 
+
+            if (new_game)
+            {
+                // przygotowania do nowej gry
+                this.current_turn = PawnColor.White;
+                this.white_score = 0;
+                this.black_score = 0;
+            }
+            else
+            {
+                // zakończenie kolejnej tury w ramach danej gry
+                // jeśli pion przeciwnika jest na pierwszym polu (najbliżej gracza) to awansuj go na damę
+                foreach (PawnColor pc in new PawnColor[] { PawnColor.Black, PawnColor.White })
+                    for (int c = 0; c < 8; c++)
+                    {
+                        Point p = PointExt.Invalid;
+                        if (pc == PawnColor.Black)
+                            p = new Point(c, 0);
+                        else
+                            p = new Point(c, 7);
+
+                        bool coronation = false;
+                        if (Pawn.GetColor(this.GetPawn(p)) == pc && Pawn.IsNormalPawn(this.GetPawn(p)))
+                        {
+                            this.InternalSetPawn(p, Pawn.GetQueenByColor(pc));
+                            coronation = true;
+                        }
+                        if (coronation)
+                            AddPlayerLog(string.Format("Koronacja na {0}", Pawn.PointToFieldAddress(p)));
+                    }
+
+                // podlicz punkty
+                int points = 0;
+                if (this.move_count == 0 && this.capture_count == 0)
+                {
+                    // człowiek lub bot nie wykonali żadnego ruchu - poddali ruch
+                    points = -1;
+                }
+                else
+                {
+                    if (this.capture_count == 1) // jedno bicie
+                        points += 2;
+                    if (this.capture_count > 1) // wiele bić :)
+                        points += 5 * this.capture_count;
+                }
+
+                if (this.current_turn == PawnColor.Black)
+                    this.black_score += points;
+                else
+                    this.white_score += points;
+
+                // zmiana tury
+                this.current_turn = this.current_turn == PawnColor.Black ? PawnColor.White : PawnColor.Black;
+            }
+
+            this.capture_count = 0;
+            this.move_count = 0;
+
+            this.DeselectPawn();
+            this.ShowGameState();
+        }
 
         #region Generowanie list możliwych ruchów piona/damy: z biciem i bez bicia
         public Point[] GetMovementCoordinates(string field_address)
@@ -288,15 +351,25 @@ namespace Checkers
         }
         #endregion
 
-
-
-        public bool MoveSelectedPawnTo(string field_addr)
+        public PawnMoveResult MoveSelectedPawnTo(string field_addr)
         {
-            if (this.movement_done)
+            field_addr = Pawn.NormalizeFieldAddress(field_addr);
+            // czy gracz próbuje wykonać drugi ruch?
+            if (this.move_count > 0)
                 throw new GameException("Nie można wykonać dwóch ruchów!");
 
+            // można wykonać wiele bić - po biciu nie zmienia się runda (gracz)
+            // ale po biciu nie można wykonać ruchu
+            if (this.capture_count > 0)
+            {
+                string[] arr = this.GetCaptureFields(Pawn.PointToFieldAddress(this.selected_field));
+                if (!arr.Contains(field_addr))
+                    throw new GameException("Po udanym biciu można wykonać tylko kolejne; nie można wykonać zwykłego ruchu!");
+            }
+
+
             if (!CanMoveSelectedPawnTo(field_addr))
-                return false;
+                return PawnMoveResult.Nothing;
 
             Point pselected = this.selected_field;
             Point pdest = Pawn.FieldAddressToPoint(field_addr);
@@ -307,48 +380,30 @@ namespace Checkers
             {
                 if ((Math.Abs(delta.X) == 1 && Math.Abs(delta.Y) == 1)) // przesun pion
                 {
-                    //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                    //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                    //this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    this.move_count++;
                     this.InternalMovePawn(pdest, pselected);
-
                     AddPlayerLog(string.Format("Ruch z {0} na {1} (pion)", Pawn.PointToFieldAddress(pselected), Pawn.PointToFieldAddress(pdest)));
-                    this.movement_done = true;
+
+                    this.ShowGameState();
+                    return PawnMoveResult.NormalMove;
                 }
 
-                if ((Math.Abs(delta.X) == 2 && Math.Abs(delta.Y) == 2)) // 
+                if ((Math.Abs(delta.X) == 2 && Math.Abs(delta.Y) == 2)) // bicie
                 {
-                    //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                    //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                    //this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                    this.capture_count++;
                     this.InternalMovePawn(pdest, pselected);
 
                     // usun piona przeciwnika i dodaj punkt graczowi
                     Point mid_point = pdest.Midpoint(pselected);
                     this.pawn_matrix[mid_point.Y, mid_point.X] = PawnType.None;
-                    if (this.current_turn == PawnColor.Black)
-                        this.black_score += 2;
-                    else
-                        this.white_score += 2;
 
                     AddPlayerLog(string.Format("Bicie z {0} na {1} (pion)", Pawn.PointToFieldAddress(pselected), Pawn.PointToFieldAddress(pdest)));
-                    this.movement_done = true;
+                    this.ShowGameState();
+                    return PawnMoveResult.Capture;
                 }
 
-                if (Pawn.IsNormalPawn(this.GetPawn(pdest))) // czy zwykły pion pojawił się na pierwszym wierszu pola przeciwnika?
-                    if (this.current_turn == PawnColor.White && pdest.Y == 7||
-                        this.current_turn == PawnColor.Black && pdest.Y == 0)
-                    {
-                        // awans na damę!
-                        this.pawn_matrix[pdest.Y, pdest.X] = this.current_turn == PawnColor.Black ? PawnType.BlackQueen : PawnType.WhiteQueen;
-                        AddPlayerLog(string.Format("Koronacja na {0}", Pawn.PointToFieldAddress(pdest)));
-                    }
-
-                this.NextTurn();
-
-
+                throw new Exception("Błąd współrzędnych ruchu; to się nie powinno zdarzyć");
             }
-
 
             if (Pawn.IsQueenPawn(this.GetSelectedPawn()))
             {
@@ -369,36 +424,32 @@ namespace Checkers
                     }
                 }
 
+                if (cap_counter > 0)
+                    this.capture_count += capture_count;
+                else
+                    this.move_count++;
+
                 this.InternalMovePawn(pdest, pselected);
-                //PawnType pc = this.pawn_matrix[pselected.Y, pselected.X];
-                //this.pawn_matrix[pselected.Y, pselected.X] = PawnType.None;
-                //this.pawn_matrix[pdest.Y, pdest.X] = pc;
+                this.ShowGameState();
 
                 // punkty
                 if (cap_counter > 0)
                 {
                     if (this.current_turn == PawnColor.Black)
-                        this.black_score += (cap_counter == 1) ? 2 : (cap_counter - 1) * 5;
+                        this.black_score += cap_counter * 2;
                     else
-                        this.white_score += (cap_counter == 1) ? 2 : (cap_counter - 1) * 5;
+                        this.white_score += cap_counter * 2;
+
+                    return PawnMoveResult.Capture;
                 }
 
-                this.movement_done = true;
-                this.NextTurn();
-
+                return PawnMoveResult.NormalMove;
             }
 
-            this.UpdateCheckboard();
-            return true;
+            // błąd
+            Debug.Assert(false);
+            return PawnMoveResult.Nothing;
         }
-
-        private void InternalMovePawn(Point dest, Point source)
-        {
-            PawnType pc = this.pawn_matrix[source.Y, source.X];
-            this.pawn_matrix[source.Y, source.X] = PawnType.None;
-            this.pawn_matrix[dest.Y, dest.X] = pc;
-        }
-
 
         public bool CanMoveSelectedPawnTo(string field_address)
         {
@@ -422,72 +473,11 @@ namespace Checkers
             }
 
             return avail_moves.Contains(pdest);
-            /*
-
-            Point delta = pdest.Subtract(pselected);
-
-            if (Pawn.IsNormalPawn(this.GetSelectedPawn())) // czy na wybranym polu stoi zwykły pion (nie dama)
-            {
-                // ruch po przekątnej o trzy pola (bicie) - możliwe zarówno do tyłu jak i do przodu
-                if (Math.Abs(delta.X) == 2 && Math.Abs(delta.Y) == 2)
-                {
-                    Point mid = pdest.Midpoint(pselected);
-                    PawnType midpawn_color = GetPawn(mid);
-                    if (this.current_turn == PawnColor.Black && Pawn.GetColor(midpawn_color) == PawnColor.White) // czarny zbija białego piona
-                        return true;
-                    if (this.current_turn == PawnColor.White && Pawn.GetColor(midpawn_color) == PawnColor.Black) // biał zbija czarnego piona
-                        return true;
-
-                    return false; // cos jest nie tak z midpawn_color...
-                }
-
-                // zwykły ruch tylko do PRZODU (białe w dół, czarne w górę)
-                if (this.current_turn == PawnColor.White && delta.Y < 1 ||
-                    this.current_turn == PawnColor.Black && delta.Y > -1)
-                    return false;
-
-                // ruch po przekątnej o jedno pole
-                if ((Math.Abs(delta.X) == 1 && Math.Abs(delta.Y) == 1))
-                    return true;
-
-                return false; // błędny ruch
-            }
-
-            if (Pawn.IsQueenPawn(this.GetSelectedPawn())) // czy to dama?
-            {
-                // ruch tylko po przekątnej
-                if (Math.Abs(delta.X) != Math.Abs(delta.Y))
-                    return false;
-
-                // mozna bić, jeśli pion przeciwnika ma wolne pole po nim (przed może stać dama)
-                Point p = pselected;
-                bool opponent_pawn_found = false;
-                for (int i = 0; i < Math.Abs(pselected.X - pdest.X); i++)
-                {
-                    // przejdź o jedno pole w kierunku pdest
-                    p = new Point(p.X + Math.Sign(delta.X), p.Y + Math.Sign(delta.Y));
-
-                    if (Pawn.GetColor(this.GetPawn(p)) == this.current_turn)
-                        return false; // dama nie może przeskoczyć nad własnym pionem (tego samego koloru)
-
-                    if (!Pawn.IsNone(this.GetPawn(p)) && opponent_pawn_found) // dwa piony przciwnika pod rząd - nie można bić
-                        return false;
-                    opponent_pawn_found = !Pawn.IsNone(this.GetPawn(p));
-                }
-
-                return true; // mozna bić!
-            }
-
-            return false;
-            */
+          
         }
-
-
-
 
         public void DeselectPawn()
         {
-
             if (this.selected_field.IsInvalid())
                 return;
 
@@ -495,7 +485,6 @@ namespace Checkers
             this.field_matrix[this.selected_field.Y, this.selected_field.X].BackColor = this.normal_color_matrix[this.selected_field.Y, this.selected_field.X];
             this.selected_field = PointExt.Invalid;
         }
-
 
         public PawnType SelectPawn(string field_address)
         {
@@ -527,61 +516,29 @@ namespace Checkers
             return cl;
         }
 
-        private void internalSetPawn(string field_address, PawnType pt)
+        private void InternalSetPawn(string field_address, PawnType pt)
         {
             Point p = Pawn.FieldAddressToPoint(field_address);
             this.pawn_matrix[p.Y, p.X] = pt;
         }
 
-        #region Obsługa GUI
-
-        private void btnNewGame_Click(object sender, EventArgs e)
+        private void InternalSetPawn(Point p, PawnType pt)
         {
-            this.ResetCheckboard();
+            Debug.Assert(Pawn.InBound(p));
+            this.pawn_matrix[p.Y, p.X] = pt;
+        }
 
-            // zaczyna zawsze biały
-            if (this.random.Next() % 2 == 1)
-            {
-                this.cpu_color = PawnColor.White;
-                this.human_color = PawnColor.Black;
-            } else
-            {
-                this.cpu_color = PawnColor.Black;
-                this.human_color = PawnColor.White;
-            }
-            this.current_turn = PawnColor.White;
-
-
-            this.richTextBox1.Clear();
-            this.AddSystemLog(string.Format("Nowa gra. Rozpoczyna biały - {0}",
-                this.cpu_color == PawnColor.White ? "BOT/CPU" : "CZŁOWIEK"));
-
-            this.panelBlack.Enabled = true;
-            this.panelWhite.Enabled = true;
-            this.richTextBox1.Enabled = true;
-            this.btnBotStep.Enabled = true;
-            this.btnNextTurn.Enabled = true;
-
-            // obsługa bota
-            try
-            {
-                this.bot.NewGame(this.cpu_color, this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(string.Format("Wyjątek podczas uruchamiania metody Bot.NewGame():\n{0}", ex.Message),
-                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            this.white_score = 0;
-            this.black_score = 0;
-            this.UpdateCheckboard();
-
+        private void InternalMovePawn(Point dest, Point source)
+        {
+            Debug.Assert(Pawn.InBound(dest) && Pawn.InBound(source));
+            PawnType pc = this.pawn_matrix[source.Y, source.X];
+            this.pawn_matrix[source.Y, source.X] = PawnType.None;
+            this.pawn_matrix[dest.Y, dest.X] = pc;
         }
 
         private void ResetCheckboard()
         {
-            bool test_mode = true;
+            bool test_mode = this.dbg.chk4PawnNewGame.Checked;
 
             if (!test_mode)
             {
@@ -596,36 +553,120 @@ namespace Checkers
                     }
 
                 return;
-            } 
+            }
 
             //tryb testowy
-
             for (int r = 0; r < 8; r++)
                 for (int c = 0; c < 8; c++)
-                {
                     this.pawn_matrix[r, c] = PawnType.None;
-                    if ((r + c) % 2 == 1 && r < 3)
-                        this.pawn_matrix[r, c] = PawnType.WhitePawn;
-                    if ((r + c) % 2 == 1 && r > 6 && c > 4)
-                        this.pawn_matrix[r, c] = PawnType.BlackPawn;
-                }
 
-            this.internalSetPawn("F5", PawnType.BlackPawn);
-            this.internalSetPawn("H5", PawnType.WhiteQueen);
-            this.internalSetPawn("G4", PawnType.BlackPawn);
+            this.InternalSetPawn("F3", PawnType.BlackPawn);
+            this.InternalSetPawn("F7", PawnType.BlackPawn);
+
+            this.InternalSetPawn("B3", PawnType.WhitePawn);
+            this.InternalSetPawn("B7", PawnType.WhitePawn);
+
+            //for (int r = 0; r < 8; r++)
+            //    for (int c = 0; c < 8; c++)
+            //    {
+            //        this.pawn_matrix[r, c] = PawnType.None;
+            //        if ((r + c) % 2 == 1 && r < 3)
+            //            this.pawn_matrix[r, c] = PawnType.WhitePawn;
+            //        if ((r + c) % 2 == 1 && r > 6 && c > 4)
+            //            this.pawn_matrix[r, c] = PawnType.BlackPawn;
+            //    }
+
+            //this.InternalSetPawn("F5", PawnType.BlackPawn);
+            //this.InternalSetPawn("H5", PawnType.WhiteQueen);
+            //this.InternalSetPawn("G4", PawnType.BlackPawn);
             //this.internalSetPawn("H5", PawnType.WhiteQueen);
             //this.pawn_matrix[6, 3] = PawnType.BlackPawn;
         }
 
-        private void btnNextTurn_Click(object sender, EventArgs e)
+        public PawnType GetPawn(string field_address)
         {
-            // zabierz jeden punkt
-            if (this.current_turn == PawnColor.Black)
-                this.black_score--;
-            else
-                this.white_score--;
+            Point p = Pawn.FieldAddressToPoint(field_address);
+            return this.GetPawn(p);
+        }
 
-            this.NextTurn();
+        private PawnType GetPawn(Point p, PawnType default_type)
+        {
+            if (!Pawn.InBound(p))
+                return default_type;
+
+            return GetPawn(p);
+        }
+
+        private PawnType GetPawn(Point p)
+        {
+            if (!Pawn.InBound(p))
+                throw new GameException("Niepoprawne współrzędne piona");
+            return pawn_matrix[p.Y, p.X];
+        }
+
+        public PawnType GetSelectedPawn()
+        {
+            if (this.selected_field.IsInvalid())
+                return PawnType.None;
+
+            return pawn_matrix[this.selected_field.Y, this.selected_field.X];
+        }
+
+        public PawnType[,] GetCheckboard()
+        {
+            PawnType[,] copy = this.pawn_matrix.Clone() as PawnType[,];
+            return copy;
+        }
+
+
+
+        #region Obsługa GUI
+
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
+            // zaczyna zawsze biały
+            if (this.random.Next() % 2 == 1)
+            {
+                this.cpu_color = PawnColor.White;
+                this.human_color = PawnColor.Black;
+            }
+            else
+            {
+                this.cpu_color = PawnColor.Black;
+                this.human_color = PawnColor.White;
+            }
+
+
+            this.richTextBox1.Clear();
+            this.AddSystemLog(string.Format("Nowa gra. Rozpoczyna biały - {0}",
+                this.cpu_color == PawnColor.White ? "BOT/CPU" : "CZŁOWIEK"));
+
+            this.panelBlack.Enabled = true;
+            this.panelWhite.Enabled = true;
+            this.richTextBox1.Enabled = true;
+            this.btnDoBotMove.Enabled = true;
+            this.btnEndTurn.Enabled = true;
+
+            this.ResetCheckboard();
+            this.DeselectPawn();
+
+            // obsługa bota
+            try
+            {
+                this.bot.NewGame(this.cpu_color, this);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Wyjątek podczas uruchamiania metody Bot.NewGame():\n{0}", ex.Message),
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            this.EndTurn(true);
+        }
+
+        private void btnEndTurn_Click(object sender, EventArgs e)
+        {
+            this.EndTurn(false);
             this.CheckStopConditions();
         }
 
@@ -634,23 +675,18 @@ namespace Checkers
             if (this.current_turn != this.cpu_color)
             {
                 // to nie kolej bota
+                this.AddSystemLog("To nie jest ruch komputera.");
                 System.Media.SystemSounds.Hand.Play();
                 return;
             }
 
             try
             {
-                this.movement_done = false;
+                Debug.Assert(move_count == 0 && capture_count == 0);
 
                 this.bot.MakeMove();
-                PawnColor current = this.current_turn;
-                if (!this.movement_done) // bot nie przesunął piona - poddał ruch
-                    if (current == PawnColor.Black)
-                        this.black_score--;
-                    else
-                        this.white_score--;
 
-                //this.NextTurn(); // następny gracz
+                this.EndTurn(false);
             }
             catch (Exception ex)
             {
@@ -658,7 +694,7 @@ namespace Checkers
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            this.UpdateCheckboard();
+            this.ShowGameState();
             this.CheckStopConditions();
         }
 
@@ -698,11 +734,12 @@ namespace Checkers
                     pt = PawnType.WhiteQueen;
                 else
                     pt = PawnType.None;
-                internalSetPawn(field_address, pt);
-                this.UpdateCheckboard();
+                InternalSetPawn(field_address, pt);
+                this.ShowGameState();
+                return;
             }
 
-
+            // kliknięcie na planszę przed rozpoczęciem gry
             if (this.current_turn == PawnColor.None || this.human_color == PawnColor.None)
                 return;
 
@@ -726,16 +763,28 @@ namespace Checkers
 
             if (pointed_color == PawnType.None && !this.selected_field.IsInvalid())
             {
-                this.movement_done = false;
-                MoveSelectedPawnTo(field_address);
+                //this.no_move_moves = false;
+                PawnMoveResult pmr = MoveSelectedPawnTo(field_address);
+                if (pmr == PawnMoveResult.NormalMove) // zwykły ruch
+                    this.EndTurn(false);
+                else
+                    if (pmr == PawnMoveResult.Capture) // było bicie
+                {
+                    // czy z tej pozycji jest jeszcze jakieś bicie? nie? to koniec ruchu
+                    // w przeciwnym razie wybierz przesuniętego piona na nowym polu, może kolejne bicie?
+                    // możliwość zignorowania bicia jest odstępstwem od reguł warcabów
+                    if (!IsCaptureAvailable(field_address))
+                        this.EndTurn(false);
+                    else
+                        this.SelectPawn(field_address);
+                }
 
                 this.CheckStopConditions();
             }
         }
 
-        private void UpdateCheckboard()
+        private void ShowGameState()
         {
-
             for (int r = 0; r < 8; r++)
                 for (int c = 0; c < 8; c++)
                 {
@@ -750,7 +799,7 @@ namespace Checkers
                             lbl.Image = Properties.Resources.black_queen;
                             break;
                         case PawnType.WhitePawn: // biały pion
-                            lbl.Image =  Properties.Resources.white;
+                            lbl.Image = Properties.Resources.white;
                             break;
                         case PawnType.WhiteQueen: // biała dama
                             lbl.Image = Properties.Resources.white_queen;
@@ -807,41 +856,6 @@ namespace Checkers
         }
 
         #endregion
-
-        public PawnType GetPawn(string field_address)
-        {
-            Point p = Pawn.FieldAddressToPoint(field_address);
-            return this.GetPawn(p);
-        }
-
-        private PawnType GetPawn(Point p, PawnType default_type)
-        {
-            if (!Pawn.InBound(p))
-                return default_type;
-
-            return GetPawn(p);
-        }
-
-        private PawnType GetPawn(Point p)
-        {
-            if (!Pawn.InBound(p))
-                throw new GameException("Niepoprawne współrzędne piona");
-            return pawn_matrix[p.Y, p.X];
-        }
-
-        public PawnType GetSelectedPawn()
-        {
-            if (this.selected_field.IsInvalid())
-                return PawnType.None;
-
-            return pawn_matrix[this.selected_field.Y, this.selected_field.X];
-        }
-
-        public PawnType[,] GetCheckboard()
-        {
-            PawnType[,] copy = this.pawn_matrix.Clone() as PawnType[,];
-            return copy;
-        }
     }
 
 

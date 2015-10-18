@@ -126,15 +126,15 @@
             this.label20 = new System.Windows.Forms.Label();
             this.lblWhiteLog = new System.Windows.Forms.Label();
             this.lblBlackLog = new System.Windows.Forms.Label();
-            this.btnBotStep = new System.Windows.Forms.Button();
+            this.btnDoBotMove = new System.Windows.Forms.Button();
             this.lblAbout = new System.Windows.Forms.LinkLabel();
             this.label25 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.lblBotAuthor = new System.Windows.Forms.Label();
             this.lblBotDescription = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.btnNextTurn = new System.Windows.Forms.Button();
             this.btnShowDebugWindow = new System.Windows.Forms.Button();
+            this.btnEndTurn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panelWhite.SuspendLayout();
             this.panelBlack.SuspendLayout();
@@ -1081,7 +1081,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Enabled = false;
-            this.label21.Location = new System.Drawing.Point(385, 26);
+            this.label21.Location = new System.Drawing.Point(354, 26);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(55, 13);
             this.label21.TabIndex = 79;
@@ -1099,9 +1099,9 @@
             // 
             // btnNewGame
             // 
-            this.btnNewGame.Location = new System.Drawing.Point(388, 170);
+            this.btnNewGame.Location = new System.Drawing.Point(499, 49);
             this.btnNewGame.Name = "btnNewGame";
-            this.btnNewGame.Size = new System.Drawing.Size(136, 37);
+            this.btnNewGame.Size = new System.Drawing.Size(89, 50);
             this.btnNewGame.TabIndex = 84;
             this.btnNewGame.Text = "Nowa gra";
             this.btnNewGame.UseVisualStyleBackColor = true;
@@ -1115,7 +1115,7 @@
             this.panelWhite.Controls.Add(this.lblWhitePoints);
             this.panelWhite.Controls.Add(this.label19);
             this.panelWhite.Enabled = false;
-            this.panelWhite.Location = new System.Drawing.Point(388, 49);
+            this.panelWhite.Location = new System.Drawing.Point(357, 49);
             this.panelWhite.Name = "panelWhite";
             this.panelWhite.Padding = new System.Windows.Forms.Padding(6);
             this.panelWhite.Size = new System.Drawing.Size(136, 50);
@@ -1125,7 +1125,7 @@
             // 
             this.lblWhitePoints.AutoSize = true;
             this.lblWhitePoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblWhitePoints.Location = new System.Drawing.Point(94, 36);
+            this.lblWhitePoints.Location = new System.Drawing.Point(94, 32);
             this.lblWhitePoints.Name = "lblWhitePoints";
             this.lblWhitePoints.Size = new System.Drawing.Size(11, 12);
             this.lblWhitePoints.TabIndex = 99;
@@ -1135,7 +1135,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label19.Location = new System.Drawing.Point(57, 36);
+            this.label19.Location = new System.Drawing.Point(57, 32);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(37, 12);
             this.label19.TabIndex = 98;
@@ -1148,7 +1148,7 @@
             this.panelBlack.Controls.Add(this.label24);
             this.panelBlack.Controls.Add(this.label18);
             this.panelBlack.Enabled = false;
-            this.panelBlack.Location = new System.Drawing.Point(388, 105);
+            this.panelBlack.Location = new System.Drawing.Point(357, 105);
             this.panelBlack.Name = "panelBlack";
             this.panelBlack.Padding = new System.Windows.Forms.Padding(6);
             this.panelBlack.Size = new System.Drawing.Size(136, 50);
@@ -1158,7 +1158,7 @@
             // 
             this.lblBlackPoints.AutoSize = true;
             this.lblBlackPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblBlackPoints.Location = new System.Drawing.Point(94, 36);
+            this.lblBlackPoints.Location = new System.Drawing.Point(94, 32);
             this.lblBlackPoints.Name = "lblBlackPoints";
             this.lblBlackPoints.Size = new System.Drawing.Size(11, 12);
             this.lblBlackPoints.TabIndex = 101;
@@ -1177,7 +1177,7 @@
             // 
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label24.Location = new System.Drawing.Point(57, 36);
+            this.label24.Location = new System.Drawing.Point(57, 32);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(37, 12);
             this.label24.TabIndex = 100;
@@ -1211,16 +1211,16 @@
             this.lblBlackLog.TabIndex = 89;
             this.lblBlackLog.Text = "<czarne>";
             // 
-            // btnBotStep
+            // btnDoBotMove
             // 
-            this.btnBotStep.Enabled = false;
-            this.btnBotStep.Location = new System.Drawing.Point(388, 217);
-            this.btnBotStep.Name = "btnBotStep";
-            this.btnBotStep.Size = new System.Drawing.Size(136, 37);
-            this.btnBotStep.TabIndex = 90;
-            this.btnBotStep.Text = "Uruchom bota\r\n(jeden krok)";
-            this.btnBotStep.UseVisualStyleBackColor = true;
-            this.btnBotStep.Click += new System.EventHandler(this.btnBotStep_Click);
+            this.btnDoBotMove.Enabled = false;
+            this.btnDoBotMove.Location = new System.Drawing.Point(357, 217);
+            this.btnDoBotMove.Name = "btnDoBotMove";
+            this.btnDoBotMove.Size = new System.Drawing.Size(136, 37);
+            this.btnDoBotMove.TabIndex = 90;
+            this.btnDoBotMove.Text = "Uruchom bota\r\n(ruch bota)";
+            this.btnDoBotMove.UseVisualStyleBackColor = true;
+            this.btnDoBotMove.Click += new System.EventHandler(this.btnBotStep_Click);
             // 
             // lblAbout
             // 
@@ -1274,7 +1274,7 @@
             this.lblBotDescription.ForeColor = System.Drawing.Color.Blue;
             this.lblBotDescription.Location = new System.Drawing.Point(3, 50);
             this.lblBotDescription.Name = "lblBotDescription";
-            this.lblBotDescription.Size = new System.Drawing.Size(231, 148);
+            this.lblBotDescription.Size = new System.Drawing.Size(231, 166);
             this.lblBotDescription.TabIndex = 95;
             this.lblBotDescription.Text = "< opis bota opracowanego przez studenta... >";
             // 
@@ -1288,23 +1288,12 @@
             this.panel4.Controls.Add(this.lblBotAuthor);
             this.panel4.Location = new System.Drawing.Point(349, 373);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(239, 203);
+            this.panel4.Size = new System.Drawing.Size(239, 221);
             this.panel4.TabIndex = 96;
-            // 
-            // btnNextTurn
-            // 
-            this.btnNextTurn.Enabled = false;
-            this.btnNextTurn.Location = new System.Drawing.Point(388, 267);
-            this.btnNextTurn.Name = "btnNextTurn";
-            this.btnNextTurn.Size = new System.Drawing.Size(136, 37);
-            this.btnNextTurn.TabIndex = 97;
-            this.btnNextTurn.Text = "Poddaj jeden ruch\r\n(-1 punkt)";
-            this.btnNextTurn.UseVisualStyleBackColor = true;
-            this.btnNextTurn.Click += new System.EventHandler(this.btnNextTurn_Click);
             // 
             // btnShowDebugWindow
             // 
-            this.btnShowDebugWindow.Location = new System.Drawing.Point(388, 316);
+            this.btnShowDebugWindow.Location = new System.Drawing.Point(357, 316);
             this.btnShowDebugWindow.Name = "btnShowDebugWindow";
             this.btnShowDebugWindow.Size = new System.Drawing.Size(136, 23);
             this.btnShowDebugWindow.TabIndex = 98;
@@ -1312,15 +1301,26 @@
             this.btnShowDebugWindow.UseVisualStyleBackColor = true;
             this.btnShowDebugWindow.Click += new System.EventHandler(this.btnShowDebugWindow_Click);
             // 
+            // btnEndTurn
+            // 
+            this.btnEndTurn.Enabled = false;
+            this.btnEndTurn.Location = new System.Drawing.Point(357, 174);
+            this.btnEndTurn.Name = "btnEndTurn";
+            this.btnEndTurn.Size = new System.Drawing.Size(136, 37);
+            this.btnEndTurn.TabIndex = 99;
+            this.btnEndTurn.Text = "Zakończ swój ruch";
+            this.btnEndTurn.UseVisualStyleBackColor = true;
+            this.btnEndTurn.Click += new System.EventHandler(this.btnEndTurn_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(600, 600);
+            this.Controls.Add(this.btnEndTurn);
             this.Controls.Add(this.btnShowDebugWindow);
-            this.Controls.Add(this.btnNextTurn);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.lblAbout);
-            this.Controls.Add(this.btnBotStep);
+            this.Controls.Add(this.btnDoBotMove);
             this.Controls.Add(this.lblBlackLog);
             this.Controls.Add(this.lblWhiteLog);
             this.Controls.Add(this.label20);
@@ -1457,19 +1457,19 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label lblWhiteLog;
         private System.Windows.Forms.Label lblBlackLog;
-        private System.Windows.Forms.Button btnBotStep;
+        private System.Windows.Forms.Button btnDoBotMove;
         private System.Windows.Forms.LinkLabel lblAbout;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label lblBotAuthor;
         private System.Windows.Forms.Label lblBotDescription;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btnNextTurn;
         private System.Windows.Forms.Label lblWhitePoints;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label lblBlackPoints;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Button btnShowDebugWindow;
+        private System.Windows.Forms.Button btnEndTurn;
     }
 }
 

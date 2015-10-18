@@ -6,7 +6,7 @@ using System.Text;
 namespace Checkers.Utils
 {
     /// <summary>
-    /// Typ opisujący typ piona
+    /// Typ opisujący rodziaj piona
     /// </summary>
     public enum PawnType
     {

@@ -44,6 +44,7 @@
     <Compile Include="IBotEngine.cs" />
     <Compile Include="Pawn.cs" />
     <Compile Include="PawnColor.cs" />
+    <Compile Include="PawnMoveResult.cs" />
     <Compile Include="PawnType.cs" />
     <Compile Include="PointExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

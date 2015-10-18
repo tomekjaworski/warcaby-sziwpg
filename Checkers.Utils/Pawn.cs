@@ -78,22 +78,29 @@ namespace Checkers.Utils
         }
 
 
+        public static string NormalizeFieldAddress(string field_addr)
+        {
+            if (String.IsNullOrEmpty(field_addr))
+                throw new GameException("Niepoprawne współrzędne piona (1)");
+            if (field_addr.Length != 2)
+                throw new GameException("Niepoprawne współrzędne piona (2)");
+
+            field_addr = field_addr.ToUpper();
+            if (!((field_addr[0] >= 'A') && (field_addr[0] <= 'H') ||
+                (field_addr[0] >= '1') && (field_addr[0] <= '8')))
+                throw new GameException("Niepoprawne współrzędne piona (3)");
+            if (!((field_addr[1] >= '1') && (field_addr[1] <= '8')))
+                throw new GameException("Niepoprawne współrzędne piona (4)");
+
+            return field_addr;
+        }
+
         /// <summary>Zamienia adres pola w postaci tekstowej na strukturę System.Drawing.Point</summary>
         /// <param name="field_address">Tekstowy adres pola w postaci <b>A1-H8</b> lub <b>11-88</b></param>
         /// <returns>Współrzędne pola X=0..7; Y=0..7</returns>
         public static Point FieldAddressToPoint(string field_address)
         {
-            if (String.IsNullOrEmpty(field_address))
-                throw new GameException("Niepoprawne współrzędne piona (1)");
-            if (field_address.Length != 2)
-                throw new GameException("Niepoprawne współrzędne piona (2)");
-
-            field_address = field_address.ToUpper();
-            if (!((field_address[0] >= 'A') && (field_address[0] <= 'H') ||
-                (field_address[0] >= '1') && (field_address[0] <= '8')))
-                throw new GameException("Niepoprawne współrzędne piona (3)");
-            if (!((field_address[1] >= '1') && (field_address[1] <= '8')))
-                throw new GameException("Niepoprawne współrzędne piona (4)");
+            field_address = NormalizeFieldAddress(field_address);
 
             int col = field_address[1] - '1';
             int row = field_address[0] >= 'A' ? field_address[0] - 'A' : field_address[0] - '1';
@@ -151,6 +158,30 @@ namespace Checkers.Utils
             if (p.Y < 0 || p.Y > 7)
                 return false;
             return true;
+        }
+
+        /// <summary>Zwróć damę jako typ piona dla podanego koloru</summary>
+        /// <param name="pc">Kolor</param>
+        /// <returns>Dama w danym kolorze</returns>
+        public static PawnType GetQueenByColor(PawnColor pc)
+        {
+            if (pc == PawnColor.Black)
+                return PawnType.BlackQueen;
+            if (pc == PawnColor.White)
+                return PawnType.WhiteQueen;
+            return PawnType.None;
+        }
+
+        /// <summary>Zwróć piona  dla podanego koloru</summary>
+        /// <param name="pc">Kolor</param>
+        /// <returns>Pion w danym kolorze</returns>
+        public static PawnType GetPawnByColor(PawnColor pc)
+        {
+            if (pc == PawnColor.Black)
+                return PawnType.BlackPawn;
+            if (pc == PawnColor.White)
+                return PawnType.WhitePawn;
+            return PawnType.None;
         }
     }
 }
