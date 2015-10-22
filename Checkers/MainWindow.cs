@@ -219,17 +219,21 @@ namespace Checkers
         }
 
         #region Generowanie list możliwych ruchów piona/damy: z biciem i bez bicia
-        public Point[] GetMovementCoordinates(string field_address)
+        public Point[] GetMovementCoordinates(string field_address, PawnType hypotetical_pawn_type)
         {
             Point pselected = Pawn.FieldAddressToPoint(field_address);
             List<Point> directions = new List<Point>();
 
-            if (Pawn.IsNormalPawn(this.GetPawn(pselected)))
+            // jeżeli typ hipotetycznego piona nie jest pusty (none) to udaj, że PT(pselected) == hipotetyczny
+            PawnType pt_selected = this.GetPawn(pselected);
+            if (hypotetical_pawn_type != PawnType.None)
+                pt_selected = hypotetical_pawn_type;
+
+            if (Pawn.IsNormalPawn(pt_selected))
             {
                 // sprawdź wszystkie kierunki dla piona
                 Point[] deltas;
-                Point d1, d2;
-                if (Pawn.GetColor(this.GetPawn(pselected)) == PawnColor.White)
+                if (Pawn.GetColor(pt_selected) == PawnColor.White)
                 {
                     // białe - tylko w dół
                     deltas = new Point[] { new Point(1, 1), new Point(-1, 1) };
@@ -252,7 +256,7 @@ namespace Checkers
                 }
             }
 
-            if (Pawn.IsQueenPawn(this.GetPawn(pselected)))
+            if (Pawn.IsQueenPawn(pt_selected))
             {
                 // sprawdź wszystkie kierunki dla damy
                 foreach (Point delta in new Point[] { new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1) })
@@ -276,15 +280,25 @@ namespace Checkers
 
         public string[] GetMovementFields(string field_address)
         {
-            return Pawn.PointToFieldAddress(this.GetMovementCoordinates(field_address));
+            return Pawn.PointToFieldAddress(this.GetMovementCoordinates(field_address, PawnType.None));
         }
 
-        public Point[] GetCaptureCoordinates(string field_address)
+        public string[] GetMovementFields(string field_address, PawnType hypotetical_pawn_type)
+        {
+            return Pawn.PointToFieldAddress(this.GetMovementCoordinates(field_address, hypotetical_pawn_type));
+        }
+
+        public Point[] GetCaptureCoordinates(string field_address, PawnType hypotetical_pawn_type)
         {
             Point pselected = Pawn.FieldAddressToPoint(field_address);
             List<Point> directions = new List<Point>();
 
-            if (Pawn.IsNormalPawn(this.GetPawn(pselected)))
+            // jeżeli typ hipotetycznego piona nie jest pusty (none) to udaj, że PT(pselected) == hipotetyczny
+            PawnType pt_selected = this.GetPawn(pselected);
+            if (hypotetical_pawn_type != PawnType.None)
+                pt_selected = hypotetical_pawn_type;
+
+            if (Pawn.IsNormalPawn(pt_selected))
             {
                 // w najbliższym sąsiedztwie musi być pion/dama o przeciwnym kolorze oraz następne pola muszą być puste
                 foreach (PawnColor pc in new PawnColor[] { PawnColor.White, PawnColor.Black })
@@ -294,16 +308,16 @@ namespace Checkers
                         Point pnn = pn.Add(delta);
                         if (!Pawn.InBound(pn) || !Pawn.InBound(pnn))
                             continue;
-                        if ((Pawn.GetColor(this.GetPawn(pselected)) == pc) &&
+                        if ((Pawn.GetColor(pt_selected) == pc) &&
                             (Pawn.GetColor(this.GetPawn(pn, PawnType.None)) == Pawn.GetOpponentColor(pc)) &&
                             (Pawn.IsNone(this.GetPawn(pnn, PawnType.None))))
                             directions.Add(pnn);
                     }
             }
 
-            if (Pawn.IsQueenPawn(this.GetPawn(pselected)))
+            if (Pawn.IsQueenPawn(pt_selected))
             {
-                PawnColor my_color = Pawn.GetColor(this.GetPawn(pselected));
+                PawnColor my_color = Pawn.GetColor(pt_selected);
                 PawnColor opponent_color = Pawn.GetOpponentColor(my_color);
 
                 // dama może bić w każdym kierunku
@@ -342,13 +356,20 @@ namespace Checkers
 
         public string[] GetCaptureFields(string field_address)
         {
-            return Pawn.PointToFieldAddress(this.GetCaptureCoordinates(field_address));
+            return Pawn.PointToFieldAddress(this.GetCaptureCoordinates(field_address, PawnType.None));
+        }
+
+        public string[] GetCaptureFields(string field_address, PawnType hypotetical_pawn_type)
+        {
+            return Pawn.PointToFieldAddress(this.GetCaptureCoordinates(field_address, hypotetical_pawn_type));
         }
 
         public bool IsCaptureAvailable(string field_address)
         {
             return GetCaptureCoordinates(field_address).Length > 0;
         }
+
+
         #endregion
 
         public PawnMoveResult MoveSelectedPawnTo(string field_addr)
@@ -854,6 +875,7 @@ namespace Checkers
             this.lblBlackPoints.Text = this.black_score.ToString();
             this.lblWhitePoints.Text = this.white_score.ToString();
         }
+
 
         #endregion
     }

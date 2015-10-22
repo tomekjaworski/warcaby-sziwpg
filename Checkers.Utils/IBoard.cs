@@ -56,12 +56,31 @@ namespace Checkers.Utils
         /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
         /// <returns>Lista współrzędnych w postaci adresów pól String[]</returns>
         string[] GetMovementFields(string field_address);
+        
+        /// <summary>Pobierz listę współrzędnych pól dla hipotetycznego piona spod adresu <i>field_address</i>. Lista uwzględnia przesunięcia piona <b>BEZ</b> zbijania pionów przeciwnika.</summary>
+        /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
+        /// <param name="hypotetical_pawn_type">Typ piona dla którego metoda ma określić listę ruchów</param>
+        /// <seealso cref="IBoard.GetMovementCoordinates(string)"/>
+        /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
+        /// <returns>Lista współrzędnych w postaci adresów pól String[]</returns>
+        string[] GetMovementFields(string field_address, PawnType hypotetical_pawn_type);
 
         /// <summary>Pobierz listę współrzędnych pól na które pion, spod adresu <i>field_address</i>, może się przesunąć <b>POD WARUNKIEM</b> zbicia choć jednego piona przeciwnika.</summary>
         /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
         /// <seealso cref="IBoard.GetCaptureCoordinates(string)"/>
         /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
         string[] GetCaptureFields(string field_address);
+
+        /// <summary>Pobierz listę współrzędnych pól dla hipotetycznego piona spod adresu<i>field_address</i>, który może się przesunąć <b>POD WARUNKIEM</b> zbicia choć jednego piona przeciwnika.</summary>
+        /// <param name="field_address">Adres piona w postaci tekstowej (np. "A1")</param>
+        /// <param name="hypotetical_pawn_type">Typ piona dla którego metoda ma określić listę ruchów</param>
+        /// <seealso cref="IBoard.GetMovementCoordinates(string)"/>
+        /// <seealso cref="Pawn.PointToFieldAddress(Point)"/>
+        /// <returns>Lista współrzędnych w postaci adresów pól String[]</returns>
+        string[] GetCaptureFields(string field_address, PawnType hypotetical_pawn_type);
+
+
+
 
         /// <summary>Sprawdź możliwość wykonania bicia</summary>
         /// <param name="field_address">Adres piona bijącego (np. "A1")</param>
