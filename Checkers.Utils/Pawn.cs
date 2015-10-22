@@ -24,7 +24,7 @@ namespace Checkers.Utils
         }
 
         /// <summary>
-        /// Porównanie dwóch pionów ze względu na ich kolor (z pominięciem typu)
+        /// Porównanie dwóch pionów ze względu na ich kolor (z pominięciem typu <see cref="PawnType"/>)
         /// </summary>
         public static bool EqualColor(PawnColor pc, PawnType pt)
         {
@@ -38,7 +38,7 @@ namespace Checkers.Utils
 
         /// <summary>Sprawdza, czy typ reprezentuje normalny pion (dowolnego koloru)</summary>
         /// <param name="pt">Typ pionu</param>
-        /// <returns>Zwraca true jeśli typ reprezentuje zwykły pion</returns>
+        /// <returns>Zwraca true jeśli typ <paramref name="pt"/> reprezentuje zwykły pion</returns>
         public static bool IsNormalPawn(PawnType pt)
         {
             return (pt == PawnType.BlackPawn || pt == PawnType.WhitePawn);
@@ -46,7 +46,7 @@ namespace Checkers.Utils
 
         /// <summary>Sprawdza, czy typ reprezentuje damę (dowolnego koloru)</summary>
         /// <param name="pt">Typ pionu</param>
-        /// <returns>Zwraca true jeśli typ reprezentuje damę</returns>
+        /// <returns>Zwraca true jeśli typ <paramref name="pt"/> reprezentuje damę</returns>
         public static bool IsQueenPawn(PawnType pt)
         {
             return (pt == PawnType.BlackQueen || pt == PawnType.WhiteQueen);
@@ -77,7 +77,12 @@ namespace Checkers.Utils
             return PawnColor.None;
         }
 
-
+        /// <summary>
+        /// Sprawdź i znormalizuj adres tekstowy pola w formie A1-H8 oraz 11-88.
+        /// </summary>
+        /// <param name="field_addr">Adres tekstowy pola</param>
+        /// <exception cref="Checkers.Utils.GameException">rzucany w przypadku niepoprawnego zapisu w <paramref name="field_addr"/></exception>
+        /// <returns>Znormalizowany adres tekstowy pola</returns>
         public static string NormalizeFieldAddress(string field_addr)
         {
             if (String.IsNullOrEmpty(field_addr))
@@ -95,9 +100,9 @@ namespace Checkers.Utils
             return field_addr;
         }
 
-        /// <summary>Zamienia adres pola w postaci tekstowej na strukturę System.Drawing.Point</summary>
+        /// <summary>Zamienia adres pola w postaci tekstowej na strukturę <see cref="System.Drawing.Point"/></summary>
         /// <param name="field_address">Tekstowy adres pola w postaci <b>A1-H8</b> lub <b>11-88</b></param>
-        /// <returns>Współrzędne pola X=0..7; Y=0..7</returns>
+        /// <returns>Współrzędne pola; x - kolumna, y - wiersz</returns>
         public static Point FieldAddressToPoint(string field_address)
         {
             field_address = NormalizeFieldAddress(field_address);
@@ -108,9 +113,9 @@ namespace Checkers.Utils
             return new Point(col, row);
         }
 
-        /// <summary>Zamienia tablicę adreów pól w postaci tekstowej na tablicę struktur System.Drawing.Point</summary>
+        /// <summary>Zamienia tablicę adreów pól w postaci tekstowej na tablicę struktur <see cref="System.Drawing.Point"/></summary>
         /// <param name="field_addresses">Tablica tekstowych adresów pól w postaci <b>A1-H8</b> lub <b>11-88</b></param>
-        /// <returns>Tablica współrzędnych pól X=0..7; Y=0..7</returns>
+        /// <returns>Tablica współrzędnych pól; x - kolumna, y - wiersz</returns>
         public static Point[] FieldAddressToPoint(String[] field_addresses)
         {
             if (field_addresses == null)
@@ -119,8 +124,8 @@ namespace Checkers.Utils
             return Array.ConvertAll<String, Point>(field_addresses, new Converter<String, Point>(Pawn.FieldAddressToPoint));
         }
 
-        /// <summary>Zamienia współrzędną numeryczną pola (obiekt System.Drawing.Point) na postać tekstową <b>A1-H8</b></summary>
-        /// <param name="p">Współrzędne pola X=0..7; Y=0..7</param>
+        /// <summary>Zamienia współrzędną numeryczną pola (obiekt<see cref="System.Drawing.Point"/>) na postać tekstową <b>A1-H8</b></summary>
+        /// <param name="p">Współrzędne pola; x - kolumna, y - wiersz</param>
         /// <returns>Tekstowa reprezentacja współrzędnych pola</returns>
         public static string PointToFieldAddress(Point p)
         {
@@ -128,8 +133,8 @@ namespace Checkers.Utils
             return s;
         }
 
-        /// <summary>Zamienia współrzędną numeryczną pola (obiekt System.Drawing.Point) na postać tekstową <b>A1-H8</b></summary>
-        /// <param name="points">Tablica współrzędnych pól X=0..7; Y=0..7</param>
+        /// <summary>Zamienia współrzędną numeryczną pola (obiekt <see cref="System.Drawing.Point"/>) na postać tekstową <b>A1-H8</b></summary>
+        /// <param name="points">Tablica współrzędnych pól; x - kolumna, y - wiersz</param>
         /// <returns>Tablica tekstowych reprezentacji współrzędnych pól</returns>
         public static string[] PointToFieldAddress(Point[] points)
         {
@@ -139,18 +144,31 @@ namespace Checkers.Utils
             return Array.ConvertAll<Point, String>(points, new Converter<Point, String>(Pawn.PointToFieldAddress));
         }
 
-
+        /// <summary>
+        /// Sprawdź, czy typ piona w polu określa brak piona (<see cref="PawnType.None"/>)
+        /// </summary>
+        /// <param name="pt">Zadany typ piona</param>
+        /// <returns>true - jeśli typ == <see cref="PawnType.None"/></returns>
         public static bool IsNone(PawnType pt)
         {
             return pt == PawnType.None;
         }
 
+        /// <summary>
+        /// Sprawdź, czy kolor piona w polu określa brak piona (<see cref="PawnColor.None"/>)
+        /// </summary>
+        /// <param name="pt">Zadany typ piona</param>
+        /// <returns>true - jeśli typ == <see cref="PawnColor.None"/></returns>
         public static bool IsNone(PawnColor pc)
         {
             return pc == PawnColor.None;
         }
 
-
+        /// <summary>
+        /// Sprawdź czy punkt <paramref name="p"/>, określający współrzędne pola na planszy, jest w zakresie (wskazuje istniejące pole)
+        /// </summary>
+        /// <param name="p">Wspołrzędne pola</param>
+        /// <returns>true - jeśli punkt wskazuje na istniejące pole</returns>
         public static bool InBound(Point p)
         {
             if (p.X < 0 || p.X > 7)
@@ -172,7 +190,7 @@ namespace Checkers.Utils
             return PawnType.None;
         }
 
-        /// <summary>Zwróć piona  dla podanego koloru</summary>
+        /// <summary>Zwróć piona dla podanego koloru</summary>
         /// <param name="pc">Kolor</param>
         /// <returns>Pion w danym kolorze</returns>
         public static PawnType GetPawnByColor(PawnColor pc)

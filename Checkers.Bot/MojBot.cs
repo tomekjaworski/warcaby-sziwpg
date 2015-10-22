@@ -60,7 +60,7 @@ namespace Checkers.Bot
             List<Point> my_pawns = new List<Point>(); // moje piony (bota)
             List<Point> human_pawns = new List<Point>(); // piony człowieka
             for (int r = 0; r < 7; r++)
-                for (int c = 0; c < 7; r++)
+                for (int c = 0; c < 7; c++)
                 {
                     if (Pawn.GetColor(tab[r, c]) == this.moj_color)
                         my_pawns.Add(new Point(c, r));
