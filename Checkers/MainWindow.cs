@@ -701,19 +701,21 @@ namespace Checkers
                 return;
             }
 
+#if DEBUG
+            // w trybie debugowania bot ma rzucać wyjątki, których nie wolno przechwytywać
             try
             {
-                Debug.Assert(move_count == 0 && capture_count == 0);
-
+#endif
                 this.bot.MakeMove();
-
                 this.EndTurn(false);
+#if DEBUG
             }
             catch (Exception ex)
             {
                 MessageBox.Show(string.Format("Wyjątek podczas uruchamiania metody Bot.NewGame():\n{0}", ex.Message),
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+#endif
 
             this.ShowGameState();
             this.CheckStopConditions();
