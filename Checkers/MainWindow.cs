@@ -366,7 +366,7 @@ namespace Checkers
 
         public bool IsCaptureAvailable(string field_address)
         {
-            return GetCaptureCoordinates(field_address).Length > 0;
+            return GetCaptureCoordinates(field_address, PawnType.None).Length > 0;
         }
 
 
@@ -477,13 +477,16 @@ namespace Checkers
             Point pselected = this.selected_field;
             Point pdest = Pawn.FieldAddressToPoint(field_address);
 
+            if (pselected.IsInvalid())
+                throw new GameException("Nie wybrano pionu metodą SelectPawn(). Nie możesz użyć metody CanMoveSelectedPawnTo()");
+
             // cel musi być pustym polem
             if (!Pawn.IsNone(this.GetPawn(field_address)))
                 return false;
 
             // pobierz wszystkie mozliwe ruchy dla piona
-            Point[] simple_moves = this.GetMovementCoordinates(Pawn.PointToFieldAddress(pselected)); // ruchy bez bicia
-            Point[] capture_moves = this.GetCaptureCoordinates(Pawn.PointToFieldAddress(pselected)); // ruchy z biciem
+            Point[] simple_moves = this.GetMovementCoordinates(Pawn.PointToFieldAddress(pselected), PawnType.None); // ruchy bez bicia
+            Point[] capture_moves = this.GetCaptureCoordinates(Pawn.PointToFieldAddress(pselected), PawnType.None); // ruchy z biciem
             Point[] avail_moves = simple_moves.Union(capture_moves).Distinct().ToArray(); //  C# fajny jest :)
 
             if (true)
@@ -701,14 +704,14 @@ namespace Checkers
                 return;
             }
 
-#if DEBUG
+#if DEBUG && false
             // w trybie debugowania bot ma rzucać wyjątki, których nie wolno przechwytywać
             try
             {
 #endif
                 this.bot.MakeMove();
                 this.EndTurn(false);
-#if DEBUG
+#if DEBUG && false
             }
             catch (Exception ex)
             {
