@@ -81,16 +81,16 @@ namespace Checkers.Utils
         public static string NormalizeFieldAddress(string field_addr)
         {
             if (String.IsNullOrEmpty(field_addr))
-                throw new GameException("Niepoprawne współrzędne piona (1)");
+                throw new GameException(string.Format("Niepoprawne współrzędne piona (1) - {0}", field_addr));
             if (field_addr.Length != 2)
-                throw new GameException("Niepoprawne współrzędne piona (2)");
+                throw new GameException(string.Format("Niepoprawne współrzędne piona (2) - {0}", field_addr));
 
             field_addr = field_addr.ToUpper();
             if (!((field_addr[0] >= 'A') && (field_addr[0] <= 'H') ||
                 (field_addr[0] >= '1') && (field_addr[0] <= '8')))
-                throw new GameException("Niepoprawne współrzędne piona (3)");
+                throw new GameException(string.Format("Niepoprawne współrzędne piona (3) - {0}", field_addr));
             if (!((field_addr[1] >= '1') && (field_addr[1] <= '8')))
-                throw new GameException("Niepoprawne współrzędne piona (4)");
+                throw new GameException(string.Format("Niepoprawne współrzędne piona (4) - {0}", field_addr));
 
             return field_addr;
         }
