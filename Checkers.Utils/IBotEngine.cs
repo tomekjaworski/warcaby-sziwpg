@@ -18,7 +18,7 @@ namespace Checkers.Utils
 
 
         /// <summary>
-        /// Inicjowanie bota. Metoda wykonywana po starcie programu szachowego.
+        /// Inicjowanie bota. Metoda wykonywana raz, po starcie programu do gry w Warcaby.
         /// </summary>
         void Initialize();
 
