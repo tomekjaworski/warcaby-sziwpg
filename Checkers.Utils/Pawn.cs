@@ -144,6 +144,15 @@ namespace Checkers.Utils
             return Array.ConvertAll<Point, String>(points, new Converter<Point, String>(Pawn.PointToFieldAddress));
         }
 
+        /// <summary>Zamienia współrzędną numeryczną pola (wiersz i kolumnę) na postać tekstową <b>A1-H8</b></summary>
+        /// <param name="col">Numer kolumny 0-7</param>
+        /// <param name="row">Numer wiersza 0-7</param>
+        /// <returns>Tekstowa reprezentacja współrzędnych pola</returns>
+        public static string PointToFieldAddress(int row, int col)
+        {
+            return PointToFieldAddress(new Point(col, row));
+        }
+
         /// <summary>
         /// Sprawdź, czy typ piona w polu określa brak piona (<see cref="PawnType.None"/>)
         /// </summary>

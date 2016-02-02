@@ -86,12 +86,20 @@ namespace Checkers
                 return false; // skoro nie, to nie :)
 
             // policz piony
+            // policz mozliwe ruchy
             int cwhite = 0, cblack = 0;
+            int move_counter = 0;
             for(int r = 0; r < 8;r++)
                 for (int c = 0; c < 8; c++)
                 {
                     if (Pawn.GetColor(this.pawn_matrix[r, c]) == PawnColor.Black) cblack++;
                     if (Pawn.GetColor(this.pawn_matrix[r, c]) == PawnColor.White) cwhite++;
+
+                    if (Pawn.IsNormalPawn(this.pawn_matrix[r, c]))
+                    {
+                        move_counter += this.GetMovementCoordinates(Pawn.PointToFieldAddress(r, c), PawnType.None).Length;
+                        move_counter += this.GetCaptureCoordinates(Pawn.PointToFieldAddress(r, c), PawnType.None).Length;
+                    }
                 }
 
             bool stop_game = false;
@@ -117,7 +125,7 @@ namespace Checkers
                 stop_game = true;
             }
 
-            if (white_counter_old == cwhite && black_counter_old == cblack)
+            if (white_counter_old == cwhite && black_counter_old == cblack && move_counter == 0)
                 this.stagnation_counter++;
             else
             {
